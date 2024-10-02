@@ -27,3 +27,7 @@ Route::post('/admin-dashboard', [
     AdminController::class,
     'dashboard'
 ] );
+Route::get('/logout', [
+    AdminController::class,
+    'logout'
+] ); 
