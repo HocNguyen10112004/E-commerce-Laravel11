@@ -629,6 +629,14 @@ ul.top-menu > li > a:focus {
 .todo-search:focus {
     width: 100% !important;
 }
+span.fa-thumbs-styling.fa.fa-thumbs-down {
+    font-size: 28px;
+    color: red;
+}
+span.fa-thumbs-styling.fa.fa-thumbs-up {
+    font-size: 28px;
+    color: green;
+}
 /*--sidebar toggle---*/
 .sidebar-toggle-box {
     float: left;
