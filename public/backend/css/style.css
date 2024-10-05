@@ -629,6 +629,9 @@ ul.top-menu > li > a:focus {
 .todo-search:focus {
     width: 100% !important;
 }
+a.active.styling-edit{
+    font-size: 20px;
+}
 span.fa-thumbs-styling.fa.fa-thumbs-down {
     font-size: 28px;
     color: red;

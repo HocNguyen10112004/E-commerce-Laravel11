@@ -9,6 +9,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <title>Admin Page</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <meta name="keywords" content="Visitors Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template, 
 Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
@@ -57,7 +59,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                <img alt="" src="images/2.png">
+                <img alt="" src="{{ asset('backend/images/2.png') }}">
                 <span class="username">
 					<?php
 						$name=Session::get('admin_name');
@@ -105,6 +107,16 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						<li><a href="{{ URL::to('/all_category_product') }}">Liệt Kê Danh Mục Sản Phẩm</a></li>
                     </ul>
                 </li>
+				<li class="sub-menu">
+                    <a href="javascript:;">
+                        <i class="fa fa-book"></i>
+                        <span>Thương Hiệu Sản Phẩm</span>
+                    </a>
+                    <ul class="sub">
+						<li><a href="{{ URL::to('/add_brand_product') }}">Thêm Thương Hiệu Sản Phẩm</a></li> 
+						<li><a href="{{ URL::to('/all_brand_product') }}">Liệt Kê Thương Hiệu Sản Phẩm</a></li>
+                    </ul>
+                </li>
     </div>
 </aside>
 <!--sidebar end-->
@@ -128,6 +140,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <script src="{{ asset('backend/js/scripts.js') }}"></script>
 <script src="{{ asset('backend/js/jquery.slimscroll.js') }}"></script>
 <script src="{{ asset('backend/js/jquery.nicescroll.js') }}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+{{-- 
 <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/flot-chart/excanvas.min.js"></script><![endif]-->
 <script src="{{ asset('backend/js/jquery.scrollTo.js') }}"></script>
 <!-- morris JavaScript -->	
@@ -219,4 +233,4 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 	</script>
 	<!-- //calendar -->
 </body>
-</html>
+</html> --}}

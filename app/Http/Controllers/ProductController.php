@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use DB;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Redirect;
-use App\Models\CategoryProduct; // Thêm model ở đây
 
-class CategoryProductController extends Controller
+class ProductController extends Controller
 {
     public function add_category_product()
     {
@@ -75,5 +71,4 @@ class CategoryProductController extends Controller
         Session::put("message", "Cập nhật danh mục sản phẩm thành công");
         return redirect("all_category_product");
     }
-    
 }

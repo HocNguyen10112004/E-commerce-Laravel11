@@ -1,5 +1,5 @@
 $(document).on("click", ".toggle-status", function () {
-    var categoryId = $(this).data("id");
+    var brandId = $(this).data("id");
     var currentIcon = $(this).find("span");
     var newStatus = currentIcon.hasClass("fa-thumbs-up") ? 0 : 1; // Nếu đang là thumbs-up thì đổi thành 0, ngược lại đổi thành 1
 
@@ -11,10 +11,10 @@ $(document).on("click", ".toggle-status", function () {
     });
 
     $.ajax({
-        url: "/active_category_product/" + categoryId, // URL động theo categoryId
+        url: "/active_brand_product/" + brandId, // URL động theo categoryId
         type: "POST", // Sử dụng phương thức POST
         data: {
-            category_status: newStatus, // Gửi trạng thái mới
+            brand_status: newStatus, // Gửi trạng thái mới
         },
         success: function (response) {
             if (response.success) {

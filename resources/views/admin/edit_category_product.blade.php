@@ -3,32 +3,25 @@
 <div class="col-lg-12">
     <section class="panel">
         <header class="panel-heading">
-            Thêm danh mục sản phẩm
+            Chỉnh sửa danh mục sản phẩm
         </header>
         <div class="panel-body">
 
             <div class="position-center">
                 
-                <form role="form" id="category-form" role="form">
+                <form role="form" action="{{ URL::to('/update_category_product/'.$edit_category_product->category_id) }}" method="POST">
                     @csrf
                     <div class="form-group">
                         <label for="category_product_name">Tên danh mục</label>
-                        <input type="text" class="form-control" id="category_product_name" name="category_product_name"
-                            placeholder="Enter name of product">
+                        <input type="text" value="{{$edit_category_product->category_name}}" class="form-control" id="category_product_name" name="category_product_name"
+                            >
                     </div>
                     <div class="form-group">
                         <label for="category_product_desc">Mô tả danh mục</label>
                         <textarea style="resize: none" rows="5" class="form-control" id="category_product_desc"
-                            name="category_product_desc" placeholder="Description of product"></textarea>
+                            name="category_product_desc">{{$edit_category_product->category_desc}}</textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="category_product_status">Trạng thái hiển thị</label>
-                        <select name="category_product_status" class="form-control input-sm m-bot15">
-                            <option value="0">Ẩn</option>
-                            <option value="1">Hiển Thị</option>
-                        </select>
-                    </div>
-                    <button type="submit" name="add_category_product" class="btn btn-info">Thêm danh mục</button>
+                    <button type="submit" name="add_category_product" class="btn btn-info">Cập nhật danh mục</button>
                 </form>
             </div>
 
