@@ -2,31 +2,51 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
+use App\Models\Product; // Thêm model ở đây
+use App\Models\CategoryProduct;
+use App\Models\BrandProduct;
 class ProductController extends Controller
 {
-    public function add_category_product()
+    public function add_product()
     {
-        return view("admin.add_category_product");
+        $category_product = CategoryProduct::orderBy('category_id', 'desc')->get();
+        $brand_product = BrandProduct::orderBy('brand_id', 'desc')->get();
+        return view('admin.add_product')->with('category_product', $category_product)->with('brand_product', $brand_product);
     }
 
-    public function all_category_product()
+    public function all_product()
     {
-        $all_category_product = CategoryProduct::all(); // Sử dụng Model để lấy tất cả dữ liệu
-        return view('admin.all_category_product')->with('all_category_product', $all_category_product);
+        $all_product = Product::with(['brand', 'category'])->get();
+
+        return view('admin.all_product')->with('all_product', $all_product);
     }
 
-    public function save_category_product(Request $request)
+    public function save_product(Request $request)
     {
-        $data = $request->only('category_product_name', 'category_product_desc', 'category_product_status');
-
-        $inserted = CategoryProduct::create([
-            'category_name' => $data['category_product_name'],
-            'category_desc' => $data['category_product_desc'],
-            'category_status' => $data['category_product_status']
+        $get_image = $request->file('product_image');
+        if($get_image){
+            $get_name_image = $get_image->getClientOriginalName();
+            $name_image = current(explode('.',$get_name_image));
+            $new_image = $name_image.rand(0, 99) . '.'.$get_image->getClientOriginalExtension();
+            $get_image->move('uploads/product',$new_image);
+        }
+        else{
+            $new_image='';
+        }
+        $inserted = Product::create([
+            'product_name' => $request->input("product_name"),
+            'product_price' => $request->input("product_price"),
+            'category_id' => $request->input("product_category"),
+            'brand_id' => $request->input("product_brand"),
+            'product_content' => $request->input("product_content"),
+            'product_desc' => $request->input("product_desc"),
+            'product_status' => $request->input("product_status"),
+            'product_image' => $new_image
         ]);
-
         if ($inserted) {
             return response()->json(['success' => true]);
         } else {
@@ -34,41 +54,59 @@ class ProductController extends Controller
         }
     }
 
-    public function active_category_product(Request $request, $category_id)
+    public function active_product(Request $request, $product_id)
     {
-        $newStatus = $request->input('category_status');
+        $newStatus = $request->input('product_status');
         
-        $category = CategoryProduct::find($category_id);
-        $category->category_status = $newStatus;
-        $category->save();
+        $product = Product::find($product_id);
+        $product->product_status = $newStatus;
+        $product->save();
 
         return response()->json(['success' => true]);
     }
 
-    public function delete_category_product($category_id) 
+    public function delete_product($product_id) 
     {
-        $deleted = CategoryProduct::destroy($category_id);
-        Session::put("message", "Xóa danh mục sản phẩm thành công");
-        return redirect("all_category_product");
+        $deleted = Product::destroy($product_id);
+        Session::put("message", "Xóa sản phẩm thành công");
+        return redirect("all_product");
     }
 
-    public function edit_category_product($category_id)
+    public function edit_product($product_id)
     {
-        $edit_category_product = CategoryProduct::find($category_id);
-        return view('admin.edit_category_product')->with('edit_category_product', $edit_category_product);
+        $category_product = CategoryProduct::orderBy('category_id', 'desc')->get();
+        $brand_product = BrandProduct::orderBy('brand_id', 'desc')->get();
+        $edit_product = Product::find($product_id);
+        return view('admin.edit_product')->with('edit_product', $edit_product)->with('category_product', $category_product)->with('brand_product', $brand_product);
     }
 
-    public function update_category_product(Request $request, $category_id)
+    public function update_product(Request $request, $product_id)
     {
 
         // $data = $request->only('category_product_name', 'category_product_desc');
         $data=array();
-        $data["category_name"]=$request->input("category_product_name");
-        $data["category_desc"]=$request->input("category_product_desc");
-        $category = CategoryProduct::find($category_id);
-        $category->update($data);
+        $get_image = $request->file('product_image');
+        if($get_image){
+            $get_name_image = $get_image->getClientOriginalName();
+            $name_image = current(explode('.',$get_name_image));
+            $new_image = $name_image.rand(0, 99) . '.'.$get_image->getClientOriginalExtension();
+            $get_image->move('uploads/product',$new_image);
+            $data['product_image'] = $new_image;
+        }
+        
+        
+        $data['product_name']=$request->input("product_name");
+        $data['product_price'] = $request->input("product_price");
+        $data['category_id'] = $request->input("product_category");
+        $data['brand_id'] = $request->input("product_brand");
+        $data['product_content'] = $request->input("product_content");
+        $data['product_desc'] = $request->input("product_desc");
+        
+        
+        $product = Product::find($product_id);
+        $product->update($data);
 
-        Session::put("message", "Cập nhật danh mục sản phẩm thành công");
-        return redirect("all_category_product");
+        Session::put("message", "Cập nhật sản phẩm thành công");
+        return redirect("all_product");
     }
 }
