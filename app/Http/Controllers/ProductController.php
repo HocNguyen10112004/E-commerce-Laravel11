@@ -82,8 +82,6 @@ class ProductController extends Controller
 
     public function update_product(Request $request, $product_id)
     {
-
-        // $data = $request->only('category_product_name', 'category_product_desc');
         $data=array();
         $get_image = $request->file('product_image');
         if($get_image){
@@ -93,8 +91,6 @@ class ProductController extends Controller
             $get_image->move('uploads/product',$new_image);
             $data['product_image'] = $new_image;
         }
-        
-        
         $data['product_name']=$request->input("product_name");
         $data['product_price'] = $request->input("product_price");
         $data['category_id'] = $request->input("product_category");
@@ -108,5 +104,14 @@ class ProductController extends Controller
 
         Session::put("message", "Cập nhật sản phẩm thành công");
         return redirect("all_product");
+    }
+    public function detail_product($product_id)
+    {
+        $category_product = CategoryProduct::where('category_status', '1')->orderBy('category_id', 'desc')->get();
+        $brand_product = BrandProduct::where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
+        $product = Product::find($product_id);
+        return view("pages.product.show_detail")  ->with('category', $category_product)
+                                                        ->with('brand', $brand_product)
+                                                        ->with('product', $product);
     }
 }

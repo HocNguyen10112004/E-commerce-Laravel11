@@ -7,18 +7,29 @@ use App\Http\Controllers\CategoryProductController;
 use App\Http\Controllers\BrandProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Middleware\AdminMiddleware;
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('', [
+//Front
+Route::get('/', [
     HomeController::class,
     'index'
-
 ]);
 Route::get('/trang_chu', [
     HomeController::class,
     'index'
 ] );
+Route::get('/danh_muc_san_pham/{category_id}', [
+    CategoryProductController::class,
+    'show_category_home'
+] );
+Route::get('/thuong_hieu_san_pham/{brand_id}', [
+    BrandProductController::class,
+    'show_brand_home'
+] );
+Route::get('/chi_tiet_san_pham/{product_id}', [
+    ProductController::class,
+    'detail_product'
+] );
+//Back
+
 //Admin
 Route::middleware(AdminMiddleware::class)->group(function () {
     Route::get('/dashboard', [AdminController::class, 'show_dashboard']);

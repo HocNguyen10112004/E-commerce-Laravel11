@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\BrandProduct; // Thêm model ở đây
-
+use App\Models\CategoryProduct; // Thêm model ở đây
+use App\Models\Product;
 class BrandProductController extends Controller
 {
     public function add_brand_product()
@@ -73,6 +74,18 @@ class BrandProductController extends Controller
 
         Session::put("message", "Cập nhật thương hiệu sản phẩm thành công");
         return redirect("all_brand_product");
+    }
+    public function show_brand_home($brand_id)
+    {
+        $category_product = CategoryProduct::where('category_status', '1')->orderBy('category_id', 'desc')->get();
+        $brand_product = BrandProduct::where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
+        $brand_by_id = Product::whereHas('brand', function ($query) use ($brand_id) {
+            $query->where('brand_id', $brand_id);})->with('brand')->get();
+        $brand_name=BrandProduct::where('brand_id',$brand_id)->first();
+        return view("pages.brand.show_brand")->with('category', $category_product)
+                                                        ->with('brand', $brand_product)
+                                                        ->with('brand_by_id', $brand_by_id)
+                                                        ->with( 'brand_name', $brand_name);
     }
 }
 

@@ -1,13 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\CategoryProduct; // Thêm model ở đây
-
+use App\Models\BrandProduct;
+use App\Models\Product;
 class CategoryProductController extends Controller
 {
     public function add_category_product()
@@ -75,5 +74,18 @@ class CategoryProductController extends Controller
         Session::put("message", "Cập nhật danh mục sản phẩm thành công");
         return redirect("all_category_product");
     }
-    
+    //End Admin
+    public function show_category_home($category_id)
+    {
+        $category_product = CategoryProduct::where('category_status', '1')->orderBy('category_id', 'desc')->get();
+        $brand_product = BrandProduct::where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
+        $category_by_id = Product::whereHas('category', function ($query) use ($category_id) {
+            $query->where('category_id', $category_id);})->with('category')->get();
+        $catgory_name=CategoryProduct::where('category_id',$category_id)->first();
+        return view("pages.category.show_category")->with('category', $category_product)
+                                                        ->with('brand', $brand_product)
+                                                        ->with('category_by_id', $category_by_id)
+                                                        ->with('category_name', $catgory_name);
+
+    }
 }
