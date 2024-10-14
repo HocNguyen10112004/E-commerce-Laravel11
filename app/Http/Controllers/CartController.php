@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\Product; // Thêm model ở đây
 use App\Models\CategoryProduct;
 use App\Models\BrandProduct;
-use Cart;
+use Darryldecode\Cart\Facades\CartFacade as Cart; // Sử dụng Facade
 class CartController extends Controller
 {
     public function save_cart(Request $request)
@@ -17,7 +17,52 @@ class CartController extends Controller
         $productID = $request->input("product_id_hidden");
         $quantity = $request->input("qty");
         $product_infor = Product::find($productID);
-        return view("pages.cart.show_cart")->with('category', $category_product)
-                                                        ->with('brand', $brand_product);
+        $sessionId = session()->getId(); // lấy session ID của người dùng hiện tại
+        Cart::add([
+        'id' => $productID, // ID sản phẩm
+        'name' => $product_infor->product_name, // Tên sản phẩm
+        'quantity' => $quantity, // Số lượng
+        'price' => $product_infor->product_price, // Giá sản phẩm
+        'attributes' => [
+            'image' =>  $product_infor->product_image
+        ]
+        ]);
+        Session::put("cart", Cart::getContent());
+        $cartItems = Session::get('cart', collect());
+        return Redirect::to('/show_cart');
     }
+    public function show_cart()
+    {
+        $category_product = CategoryProduct::where('category_status', '1')->orderBy('category_id', 'desc')->get();
+        $brand_product = BrandProduct::where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
+        $cartItems = Session::get('cart', collect());
+        // Tính tổng tiền
+        $totalAmount = $this->getTotalAmount($cartItems);
+        return view("pages.cart.show_cart")->with('category', $category_product)
+                                                ->with('brand', $brand_product)
+                                                ->with('cartItems', $cartItems)
+                                                ->with('totalAmount', $totalAmount);
+    }
+    public function getTotalAmount($cartItems)
+    {
+        return $cartItems->sum(function ($item) {
+            return $item->price * $item->quantity;
+        });
+    }
+    public function delete_to_cart($id)
+    {
+        // Xóa sản phẩm khỏi giỏ hàng
+        Cart::remove($id);
+        
+        // Cập nhật lại session (nếu cần)
+        Session::put("cart", Cart::getContent());
+
+        // Trả về JSON response
+        return response()->json([
+            'success' => true,
+            'message' => 'Sản phẩm đã được xóa khỏi giỏ hàng.',
+            'cart' => Cart::getContent() // có thể trả về nội dung giỏ hàng nếu cần
+        ]);
+    }
+
 }

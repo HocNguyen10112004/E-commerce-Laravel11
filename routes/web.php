@@ -144,3 +144,13 @@ Route::post('/save_cart', [
     CartController::class,   
     'save_cart'
 ]);
+
+Route::get('/show_cart', [
+    CartController::class,   
+    'show_cart'
+]); 
+Route::get('/delete_to_cart/{id}', [
+    CartController::class,   
+    'delete_to_cart'
+]); 
+
