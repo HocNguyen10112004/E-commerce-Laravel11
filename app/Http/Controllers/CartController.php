@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\Product; // Thêm model ở đây
 use App\Models\CategoryProduct;
 use App\Models\BrandProduct;
+use Cart;
 class CartController extends Controller
 {
     public function save_cart(Request $request)
@@ -15,7 +16,7 @@ class CartController extends Controller
         $brand_product = BrandProduct::where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
         $productID = $request->input("product_id_hidden");
         $quantity = $request->input("qty");
-        $data = Product::find($productID);
+        $product_infor = Product::find($productID);
         return view("pages.cart.show_cart")->with('category', $category_product)
                                                         ->with('brand', $brand_product);
     }
