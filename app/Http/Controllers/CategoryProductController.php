@@ -44,12 +44,19 @@ class CategoryProductController extends Controller
         $category = CategoryProduct::find($category_id);
         $category->category_status = $newStatus;
         $category->save();
-
+        if ($newStatus == 0) {
+            // Nếu trạng thái danh mục là 0 (ẩn), ẩn tất cả sản phẩm
+            Product::where('category_id', $category_id)->update(['product_status' => 0]);}
         return response()->json(['success' => true]);
     }
 
     public function delete_category_product($category_id) 
     {
+        $category = CategoryProduct::find($category_id);
+        if ($category->products()->count() > 0) {
+            Session::put("message", "Cannot delete category with existing products.");
+        return redirect()->back();
+        }
         $deleted = CategoryProduct::destroy($category_id);
         Session::put("message", "Xóa danh mục sản phẩm thành công");
         return redirect("all_category_product");

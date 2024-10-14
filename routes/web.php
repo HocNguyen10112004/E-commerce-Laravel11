@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoryProductController;
 use App\Http\Controllers\BrandProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Controllers\CartController;
 //Front
 Route::get('/', [
     HomeController::class,
@@ -137,3 +138,9 @@ Route::middleware(AdminMiddleware::class)->group(function () {
     ] );
 
 });
+
+//Cart
+Route::post('/save_cart', [
+    CartController::class,   
+    'save_cart'
+]);

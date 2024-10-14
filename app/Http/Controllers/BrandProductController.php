@@ -45,12 +45,19 @@ class BrandProductController extends Controller
         $brand = BrandProduct::find($brand_id);
         $brand->brand_status = $newStatus;
         $brand->save();
-
+        if ($newStatus == 0) {
+            // Nếu trạng thái danh mục là 0 (ẩn), ẩn tất cả sản phẩm
+            Product::where('brand_id', $brand_id)->update(['product_status' => 0]);}
         return response()->json(['success' => true]);
     }
 
     public function delete_brand_product($brand_id) 
     {
+        $brand = BrandProduct::find($brand_id);
+        if ($brand->products()->count() > 0) {
+            Session::put("message", "Cannot delete category with existing products.");
+            return redirect()->back();
+        }
         $deleted = BrandProduct::destroy($brand_id);
         Session::put("message", "Xóa thương hiệu sản phẩm thành công");
         return redirect("all_brand_product");
@@ -80,7 +87,7 @@ class BrandProductController extends Controller
         $category_product = CategoryProduct::where('category_status', '1')->orderBy('category_id', 'desc')->get();
         $brand_product = BrandProduct::where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
         $brand_by_id = Product::whereHas('brand', function ($query) use ($brand_id) {
-            $query->where('brand_id', $brand_id);})->with('brand')->get();
+            $query->where('brand_id', $brand_id);})->with('brand')->where('product_status', '1')->get();
         $brand_name=BrandProduct::where('brand_id',$brand_id)->first();
         return view("pages.brand.show_brand")->with('category', $category_product)
                                                         ->with('brand', $brand_product)
