@@ -1,7 +1,7 @@
 @extends('welcome')
 @section('content')
     <section id="cart_items" class="col-sm-9">
-        <div class="container">
+        <div class="">
             <div class="breadcrumbs">
                 <ol class="breadcrumb">
                     <li><a href="{{ URL::to('/') }}">Home</a></li>
@@ -65,7 +65,7 @@
         </div>
     </section> <!--/#cart_items-->
     <section id="do_action" class="col-sm-9">
-        <div class="container">
+        <div class="">
             <div class="heading">
                 <h3>What would you like to do next?</h3>
                 <p>Choose if you have a discount code or reward points you want to use or would like to estimate your
