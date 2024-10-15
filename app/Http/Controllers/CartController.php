@@ -12,8 +12,6 @@ class CartController extends Controller
 {
     public function save_cart(Request $request)
     {
-        $category_product = CategoryProduct::where('category_status', '1')->orderBy('category_id', 'desc')->get();
-        $brand_product = BrandProduct::where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
         $productID = $request->input("product_id_hidden");
         $quantity = $request->input("qty");
         $product_infor = Product::find($productID);
@@ -28,9 +26,9 @@ class CartController extends Controller
         ]
         ]);
         Session::put("cart", Cart::getContent());
-        $cartItems = Session::get('cart', collect());
         return Redirect::to('/show_cart');
     }
+
     public function show_cart()
     {
         $category_product = CategoryProduct::where('category_status', '1')->orderBy('category_id', 'desc')->get();
@@ -62,6 +60,38 @@ class CartController extends Controller
             'success' => true,
             'message' => 'Sản phẩm đã được xóa khỏi giỏ hàng.',
             'cart' => Cart::getContent() // có thể trả về nội dung giỏ hàng nếu cần
+        ]);
+    }
+    public function update_cart_quantity(Request $request)
+    {
+        $itemId = $request->input('product_id');
+        $quantity = $request->input('quantity');
+        // Cập nhật số lượng trong giỏ hàng
+        // Cart::update($itemId, array('quantity'=> $quantity));
+        Cart::remove($itemId);
+        $product_infor = Product::find($itemId);
+        $sessionId = session()->getId(); // lấy session ID của người dùng hiện tại
+        Cart::add([
+        'id' => $itemId, // ID sản phẩm
+        'name' => $product_infor->product_name, // Tên sản phẩm
+        'quantity' => $quantity, // Số lượng
+        'price' => $product_infor->product_price, // Giá sản phẩm
+        'attributes' => [
+            'image' =>  $product_infor->product_image
+        ]
+        ]);
+        // Cập nhật lại session
+        Session::put("cart", Cart::getContent());
+
+        // Tính lại tổng tiền giỏ hàng
+        $cartItems = Session::get('cart', collect());
+        $totalAmount = $this->getTotalAmount($cartItems);
+
+        // Trả về JSON response
+        return response()->json([
+            'success' => true,
+            'message' => 'Số lượng đã được cập nhật.',
+            'totalAmount' => $totalAmount
         ]);
     }
 

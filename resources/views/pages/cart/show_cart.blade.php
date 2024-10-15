@@ -25,7 +25,7 @@
                         // $cartItems = Session::get('cart', collect());
                         ?>
                         @foreach ($cartItems as $item)
-                            <tr id="item-{{ $item->id }}">
+                            <tr data-id="{{ $item->id }}">
                                 <td class="cart_product">
                                     <a href=""><img
                                             src="{{ URL::to('uploads/product/' . $item->attributes->image) }}"
@@ -129,13 +129,14 @@
                 <div class="col-sm-6">
                     <div class="total_area">
                         <ul>
-                            <li>Tổng<span id="ajax">{{ $totalAmount }}</span></li>
-                            <li>Thuế<span></span></li>
-                            <li>Phí vận chuyển<span>Free</span></li>
-                            <li>Thành tiền<span>$61</span></li>
+                            <li>Tổng<span id="ajax">{{ number_format((int) $totalAmount) . ' ' . 'VNĐ' }}</span></li>
+                            <li>Thuế<span>10%</span></li>
+                            <li>Phí vận chuyển<span>0</span></li>
+                            <li>Thành tiền: <span id="final">{{ number_format($totalAmount * 1.1) . ' VNĐ' }}</span>
+                            </li>
                         </ul>
                         <a class="btn btn-default update" href="">Update</a>
-                        <a class="btn btn-default check_out" href="">Check Out</a>
+                        <a class="btn btn-default check_out" href="/login_checkout">Check Out</a>
                     </div>
                 </div>
             </div>
@@ -159,18 +160,19 @@
                     if (response.success) {
                         // Xóa hàng trực tiếp từ DOM
                         row.remove(); // Xóa hàng khỏi bảng
-                        var currentValue = parseInt($('#ajax').text(),
+                        var currentValue = parseInt($('#ajax').text().replace(/,/g, ''),
                             10); // Chuyển đổi thành số nguyên
                         var pr = parseInt(row.find('.cart_price p').data(
-                        'price')); // Lấy giá từ hàng hiện tại
+                            'price')); // Lấy giá từ hàng hiện tại
                         var qt = parseInt(row.find('.cart_quantity_input')
-                    .val()); // Lấy số lượng từ hàng hiện tại
+                            .val()); // Lấy số lượng từ hàng hiện tại
 
 
-                        var newValue = currentValue - pr * qt; // Trừ 100
+                        var newValue = currentValue - pr * qt;
 
                         // Cập nhật lại nội dung của phần tử
-                        $('#ajax').text(newValue);
+                        $('#ajax').text(newValue.toLocaleString() + ' VNĐ');
+                        $('#final').text((newValue * 1.1).toLocaleString() + ' VNĐ');
                         alert(response.message); // Hiển thị thông báo thành công
                     } else {
                         alert('Có lỗi xảy ra: ' + response.message);
@@ -181,5 +183,91 @@
                 }
             });
         }
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        // Khi nhấn nút tăng hoặc giảm số lượng
+        $('.cart_quantity_up, .cart_quantity_down').click(function(e) {
+            e.preventDefault();
+
+            // Lấy thông tin cần thiết
+            var $row = $(this).closest('tr');
+            var $quantityInput = $row.find('.cart_quantity_input');
+            var quantity = parseInt($quantityInput.val());
+            var price = parseFloat($row.find('.cart_price p').data('price'));
+            var productId = $row.data('id'); // Giả sử bạn có lưu id sản phẩm trong thẻ tr
+            var action = $(this).hasClass('cart_quantity_up') ? 'increase' : 'decrease';
+
+            // Tăng hoặc giảm số lượng dựa trên nút nhấn
+            if (action === 'increase') {
+                quantity += 1;
+            } else if (action === 'decrease' && quantity > 1) {
+                quantity -= 1;
+            }
+
+            // Cập nhật lại giá trị trong input
+            $quantityInput.val(quantity);
+
+            // Tính lại tổng tiền cho sản phẩm
+            var total = price * quantity;
+            $row.find('.cart_total_price').text(total.toLocaleString() + ' VNĐ');
+
+            // Gửi AJAX để cập nhật Session Cart
+            $.ajax({
+                url: '/update_cart_quantity', // URL mà bạn sẽ xử lý logic cập nhật Cart trong Laravel
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}', // Bảo mật CSRF token
+                    product_id: productId,
+                    quantity: quantity
+                },
+
+                success: function(response) {
+                    // Cập nhật lại tổng giá trị của giỏ hàng nếu có
+                    $('#ajax').text(response.totalAmount.toLocaleString() + ' VNĐ');
+                    $('#final').text((response.totalAmount * 1.1).toLocaleString() +
+                        ' VNĐ');
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText); // Log lỗi nếu có
+                }
+            });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $('.cart_quantity_input').on('change', function(e) {
+            e.preventDefault();
+            var $row = $(this).closest('tr');
+            var $quantityInput = $row.find('.cart_quantity_input');
+            var quantity = parseInt($quantityInput.val());
+            var price = parseFloat($row.find('.cart_price p').data('price'));
+            var productId = $row.data('id');
+            var total = price * quantity;
+            $row.find('.cart_total_price').text(total.toLocaleString() + ' VNĐ');
+
+            // Gửi AJAX để cập nhật Session Cart
+            $.ajax({
+                url: '/update_cart_quantity', // URL mà bạn sẽ xử lý logic cập nhật Cart trong Laravel
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}', // Bảo mật CSRF token
+                    product_id: productId,
+                    quantity: quantity
+                },
+
+                success: function(response) {
+                    // Cập nhật lại tổng giá trị của giỏ hàng nếu có
+                    $('#ajax').text(response.totalAmount.toLocaleString() + ' VNĐ');
+                    $('#final').text((response.totalAmount * 1.1).toLocaleString() +
+                        ' VNĐ');
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText); // Log lỗi nếu có
+                }
+            });
+        });
     });
 </script>

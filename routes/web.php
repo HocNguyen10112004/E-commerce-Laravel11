@@ -8,6 +8,7 @@ use App\Http\Controllers\BrandProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 //Front
 Route::get('/', [
     HomeController::class,
@@ -153,4 +154,10 @@ Route::get('/delete_to_cart/{id}', [
     CartController::class,   
     'delete_to_cart'
 ]); 
+Route::post('/update_cart_quantity', [CartController::class, 'update_cart_quantity']);
 
+//checkout
+Route::get('/login_checkout', [
+    CheckoutController::class,   
+    'login_checkout'
+]); 
