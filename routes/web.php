@@ -161,3 +161,11 @@ Route::get('/login_checkout', [
     CheckoutController::class,   
     'login_checkout'
 ]); 
+Route::post('/add_customer', [
+    CheckoutController::class,   
+    'add_customer'
+]);
+Route::get('/checkout', [
+    CheckoutController::class,   
+    'checkout'
+]); 
