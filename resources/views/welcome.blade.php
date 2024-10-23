@@ -99,8 +99,15 @@
                                 </li>
                                 <li><a href="{{ URL::to('/show_cart') }}"><i class="fa fa-shopping-cart"></i>Giỏ
                                         hàng</a></li>
-                                <li><a href="{{ URL::to('/login_checkout') }}"><i class="fa fa-lock"></i>Đăng nhập</a>
-                                </li>
+                                @if (Session::get('customer_id') == null)
+                                    <li><a href="{{ URL::to('/login_checkout') }}"><i class="fa fa-lock"></i>Đăng
+                                            nhập</a>
+                                    </li>
+                                @else
+                                    <li><a href="{{ URL::to('/logout_checkout') }}"><i class="fa fa-lock"></i>Đăng
+                                            xuất</a>
+                                    </li>
+                                @endif
                             </ul>
                         </div>
                     </div>
@@ -134,7 +141,7 @@
                                         <li><a href="blog.html">Blog List</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="404.html">Giỏ Hàng</a></li>
+                                <li><a href="{{ URL::to('/show_cart') }}">Giỏ Hàng</a></li>
                                 <li><a href="contact-us.html">Liên hệ</a></li>
                             </ul>
                         </div>

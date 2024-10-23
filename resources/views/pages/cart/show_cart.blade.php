@@ -135,8 +135,12 @@
                             <li>Thành tiền: <span id="final">{{ number_format($totalAmount * 1.1) . ' VNĐ' }}</span>
                             </li>
                         </ul>
-                        <a class="btn btn-default update" href="">Update</a>
-                        <a class="btn btn-default check_out" href="/login_checkout">Check Out</a>
+                        {{-- <a class="btn btn-default check_out" href="/login_checkout">Check Out</a> --}}
+                        @if (Session::get('customer_id') != null)
+                            <a href="{{ URL::to('/checkout') }}" class="btn btn-default check_out"> Checkout</a>
+                        @else
+                            <a href="{{ URL::to('/login_checkout') }}" class="btn btn-default check_out">Checkout</a>
+                        @endif
                     </div>
                 </div>
             </div>

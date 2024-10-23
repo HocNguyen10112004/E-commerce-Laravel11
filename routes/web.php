@@ -161,6 +161,10 @@ Route::get('/login_checkout', [
     CheckoutController::class,   
     'login_checkout'
 ]); 
+Route::get('/logout_checkout', [
+    CheckoutController::class,   
+    'logout_checkout'
+]); 
 Route::post('/add_customer', [
     CheckoutController::class,   
     'add_customer'
@@ -169,3 +173,11 @@ Route::get('/checkout', [
     CheckoutController::class,   
     'checkout'
 ]); 
+Route::post('/save_checkout_customer', [
+    CheckoutController::class,   
+    'save_checkout_customer'
+]);
+Route::post('/login_customer', [
+    CheckoutController::class,   
+    'login_customer'
+]);

@@ -6,9 +6,10 @@
                 <div class="col-sm-4 col-sm-offset-1">
                     <div class="login-form"><!--login form-->
                         <h2>Login to your account</h2>
-                        <form action="#">
-                            <input type="email" placeholder="Email Address" />
-                            <input type="password" placeholder="Password" />
+                        <form action="{{ URL::to('/login_customer') }}" method="POST">
+                            @csrf
+                            <input type="email" name="email" placeholder="Email Address" />
+                            <input type="password" name="password" placeholder="Password" />
                             <span>
                                 <input type="checkbox" class="checkbox">
                                 Keep me signed in

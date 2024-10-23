@@ -8,6 +8,7 @@ use App\Models\Product; // Thêm model ở đây
 use App\Models\CategoryProduct;
 use App\Models\BrandProduct;
 use App\Models\Customer;
+use App\Models\Shipping;
 use Darryldecode\Cart\Facades\CartFacade as Cart; // Sử dụng Facade
 
 class CheckoutController extends Controller
@@ -38,5 +39,38 @@ class CheckoutController extends Controller
         $brand_product = BrandProduct::where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
         return view('pages.checkout.checkout')->with('category', $category_product)
                                                 ->with('brand', $brand_product);;
+    }
+    public function save_checkout_customer(Request $request)
+    {
+        $inserted = Shipping::create([
+            'shipping_name' => $request['shipping_name'],
+            'shipping_phone' => $request['shipping_phone'],
+            'shipping_email' => $request['shipping_email'],
+            'shipping_address' => $request['shipping_address'],
+            'shipping_notes' => $request['shipping_notes']
+        ]);
+        $shipping_id = $inserted->shipping_id;
+        Session::put('shipping_id', $shipping_id);
+        return Redirect::to('/checkout');
+    }
+    public function logout_checkout()
+    {
+        Session::flush();
+        return Redirect::to('/login_checkout');
+    }
+    public function login_customer(Request $request)
+    {
+        $email= $request->input('email');
+        $password= $request->input('password');
+        $user = Customer::where('customer_email', $email)->where('customer_password', $password)->first();
+        if ($user) 
+        {
+            Session::put('customer_id', $user->customer_id);
+            return Redirect::to('/checkout');
+        } 
+        else 
+        {
+            return Redirect::to('/login_checkout');
+        }
     }
 }
