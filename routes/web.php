@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoryProductController;
 use App\Http\Controllers\BrandProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\PaymentMiddleware;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 //Front
@@ -169,10 +170,12 @@ Route::post('/add_customer', [
     CheckoutController::class,   
     'add_customer'
 ]);
-Route::get('/checkout', [
-    CheckoutController::class,   
-    'checkout'
-]); 
+Route::middleware(PaymentMiddleware::class)->group(function () {
+    Route::get('/payment', [
+        CheckoutController::class,   
+        'payment'
+    ]); 
+});
 Route::post('/save_checkout_customer', [
     CheckoutController::class,   
     'save_checkout_customer'
@@ -180,4 +183,13 @@ Route::post('/save_checkout_customer', [
 Route::post('/login_customer', [
     CheckoutController::class,   
     'login_customer'
+]);
+
+Route::get('/checkout', [
+    CheckoutController::class,   
+    'checkout'
+]); 
+Route::post('/order_place', [
+    CheckoutController::class,   
+    'order_place'
 ]);

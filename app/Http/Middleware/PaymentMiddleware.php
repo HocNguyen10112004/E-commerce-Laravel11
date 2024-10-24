@@ -4,11 +4,10 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Redirect;
-class AdminMiddleware
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Session;
+class PaymentMiddleware
 {
     /**
      * Handle an incoming request.
@@ -17,11 +16,16 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Kiểm tra nếu chưa có thông tin admin trong session
-        if (!Session::has('admin_id')) {
-            return Redirect::to('/admin'); // Chuyển hướng đến trang login cho admin
+        if (!Session::has('customer_id')) {
+            return Redirect::to('/login_checkout');
+        }
+        if (!Session::has('cart')) {
+            return Redirect::to('/show_cart');
+        }
+        if (!Session::has("shipping_id")) {
+            return Redirect::to('/checkout');
         }
 
-        return $next($request); // Cho phép truy cập nếu admin đã đăng nhập
+        return $next($request);
     }
 }

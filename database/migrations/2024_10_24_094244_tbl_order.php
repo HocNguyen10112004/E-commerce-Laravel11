@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_shipping', function (Blueprint $table) {
-            $table->bigIncrements('shipping_id');
+        Schema::create('tbl_order', function (Blueprint $table) {
+            $table->bigIncrements('order_id');
             $table->integer('customer_id');
-            $table->string('shipping_name');
-            $table->string('shipping_address');
-            $table->string('shipping_phone');
-            $table->string('shipping_email');
-            $table->string('shipping_notes');
+            $table->integer('shipping_id');
+            $table->integer('payment_id');
+            $table->float('order_total');
+            $table->integer('order_status');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_shipping');
+        Schema::dropIfExists('tbl_order');
     }
 };

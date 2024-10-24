@@ -29,6 +29,10 @@
 </head><!--/head-->
 
 <body>
+    @php
+        echo Session::get('customer_id');
+        echo Session::get('shipping_id');
+    @endphp
     <header id="header"><!--header-->
         <div class="header_top"><!--header_top-->
             <div class="container">
@@ -95,7 +99,7 @@
                                 <li><a href="{{ URL::to('/login_checkout') }}"><i class="fa fa-user"></i>Tài khoản</a>
                                 </li>
                                 <li><a href="#"><i class="fa fa-star"></i>Yêu thích</a></li>
-                                <li><a href="{{ URL::to('/checkout') }}"><i class="fa fa-crosshairs"></i>Thanh toán</a>
+                                <li><a href="{{ URL::to('/payment') }}"><i class="fa fa-crosshairs"></i>Thanh toán</a>
                                 </li>
                                 <li><a href="{{ URL::to('/show_cart') }}"><i class="fa fa-shopping-cart"></i>Giỏ
                                         hàng</a></li>

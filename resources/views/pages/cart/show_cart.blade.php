@@ -21,9 +21,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php
-                        // $cartItems = Session::get('cart', collect());
-                        ?>
                         @foreach ($cartItems as $item)
                             <tr data-id="{{ $item->id }}">
                                 <td class="cart_product">
