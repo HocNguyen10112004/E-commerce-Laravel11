@@ -155,7 +155,10 @@ Route::get('/delete_to_cart/{id}', [
     CartController::class,   
     'delete_to_cart'
 ]); 
-Route::post('/update_cart_quantity', [CartController::class, 'update_cart_quantity']);
+Route::post('/update_cart_quantity', [
+    CartController::class, 
+    'update_cart_quantity'
+]);
 
 //checkout
 Route::get('/login_checkout', [
@@ -192,4 +195,19 @@ Route::get('/checkout', [
 Route::post('/order_place', [
     CheckoutController::class,   
     'order_place'
+]);
+//order
+Route::middleware(AdminMiddleware::class)->group(function () {
+    Route::get('/manage_order', [
+        CheckoutController::class, 
+        'manage_order'
+    ]);
+});
+Route::get('/delete_order/{order_id}', [
+    CheckoutController::class,   
+    'delete_order'
+] ); 
+Route::post('/update_order/{order_id}', [
+    CheckoutController::class, 
+    'update_order'
 ]);

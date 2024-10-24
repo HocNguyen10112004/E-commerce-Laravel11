@@ -11,5 +11,9 @@ class Shipping extends Model
     protected $table = 'tbl_shipping'; // Tên bảng
     protected $primaryKey = 'shipping_id'; // Khóa chính là category_id, không phải id
     // Các trường được phép thêm/sửa
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'shipping_id', 'shipping_id');
+    }
     protected $fillable = ['shipping_email', 'shipping_name', 'shipping_phone', 'shipping_address', 'shipping_notes', 'customer_id'];
 }

@@ -115,4 +115,19 @@ class CheckoutController extends Controller
         Cart::clear();
         return Redirect::to('/payment');
     }
+    public function manage_order()
+    {
+        $all_order = Order::with(['customer','shipping', 'payment'])->get();
+        return view("admin.manage_order")->with("all_order", $all_order);
+    }
+    public function delete_order($order_id) 
+    {
+        $deleted = Order::destroy($order_id);
+        Session::put("message", "Xóa sản phẩm thành công");
+        return Redirect::to("manage_order");
+    }
+    public function update_order($order_id, Request $request)
+    {
+        $order = Order::find($order_id);
+    }
 }
