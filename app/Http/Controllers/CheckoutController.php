@@ -122,12 +122,20 @@ class CheckoutController extends Controller
     }
     public function delete_order($order_id) 
     {
-        $deleted = Order::destroy($order_id);
+        $delete = Order::find( $order_id );
+        Order::destroy($order_id);
+        OrderDetails::destroy($order_id);
+        Shipping::destroy($delete->shipping_id);
+        Payment::destroy($delete->payment_id);
         Session::put("message", "Xóa sản phẩm thành công");
         return Redirect::to("manage_order");
     }
-    public function update_order($order_id, Request $request)
+    public function view_order($order_id)
     {
-        $order = Order::find($order_id);
+        $order = Order::with(["shipping","customer", "payment"])->find($order_id);
+        $collection = OrderDetails::with("product")->where("order_id", $order_id)->get();
+        return view("admin.view_order")->with("order", $order)->with("collection", $collection);
+
     }
+    
 }

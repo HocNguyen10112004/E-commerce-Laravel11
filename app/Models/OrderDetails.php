@@ -17,7 +17,7 @@ class OrderDetails extends Model
     }
     public function product()
     {
-        return $this->hasMany(Product::class, 'product_id', 'product_id');
+        return $this->belongsTo(Product::class, 'product_id', 'product_id');
     }
     protected $fillable = ['order_id', 'product_id', 'product_sales_quantity'];
 }

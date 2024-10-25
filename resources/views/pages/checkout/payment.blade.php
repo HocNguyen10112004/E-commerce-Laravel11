@@ -9,16 +9,6 @@
                 </div>
                 {{ Session::put('success', null) }}
             @endif
-            <div class="breadcrumbs">
-                <ol class="breadcrumb">
-                    <li><a href="{{ URL::to('/') }}">Home</a></li>
-                    <li class="active">Check out</li>
-                </ol>
-            </div><!--/breadcrums-->
-            <div class="register-req">
-                <p>Please use Register And Checkout to easily get access to your order history, or use Checkout as Guest</p>
-            </div><!--/register-req-->
-
             <div class="">
                 <div class="breadcrumbs">
                     <ol class="breadcrumb">

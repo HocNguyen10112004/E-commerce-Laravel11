@@ -207,7 +207,7 @@ Route::get('/delete_order/{order_id}', [
     CheckoutController::class,   
     'delete_order'
 ] ); 
-Route::post('/update_order/{order_id}', [
+Route::get('/edit_order/{order_id}', [
     CheckoutController::class, 
-    'update_order'
+    'view_order'
 ]);

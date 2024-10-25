@@ -23,7 +23,8 @@ class Product extends Model
     }
     public function orderDetails()
     {
-        return $this->belongsTo(OrderDetails::class, 'product_id', 'product_id');
+        
+        return $this->hasMany(OrderDetails::class, 'product_id', 'product_id');
     }
     // Các trường được phép thêm/sửa
     protected $fillable = ['product_name', 'product_price', 'product_image', 'category_id', 'brand_id', 'product_content', 'product_desc', 'product_status'];
