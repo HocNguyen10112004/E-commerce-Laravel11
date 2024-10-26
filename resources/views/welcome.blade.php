@@ -31,9 +31,26 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72"
         href="frontend/images/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="frontend/images/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
 </head><!--/head-->
 
 <body>
+    @php
+        echo Session::get('customer_id');
+        echo Session::get('shipping_id');
+
+    @endphp
     <div class="fb-share-button" data-href="http://127.0.0.1:8000" data-layout="" data-size=""><a target="_blank"
             href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2F127.0.0.1%3A8000%2F&amp;src=sdkpreparse"
             class="fb-xfbml-parse-ignore">Chia sẻ</a></div>
@@ -103,7 +120,8 @@
                                 <li><a href="{{ URL::to('/login_checkout') }}"><i class="fa fa-user"></i>Tài khoản</a>
                                 </li>
                                 <li><a href="#"><i class="fa fa-star"></i>Yêu thích</a></li>
-                                <li><a href="{{ URL::to('/payment') }}"><i class="fa fa-crosshairs"></i>Thanh toán</a>
+                                <li><a href="{{ URL::to('/payment') }}"><i class="fa fa-crosshairs"></i>Thanh
+                                        toán</a>
                                 </li>
                                 <li><a href="{{ URL::to('/show_cart') }}"><i class="fa fa-shopping-cart"></i>Giỏ
                                         hàng</a></li>

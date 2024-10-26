@@ -11,6 +11,7 @@ use App\Http\Middleware\PaymentMiddleware;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\DeliveryController;
 //Front
 Route::get('/', [
     HomeController::class,
@@ -234,3 +235,5 @@ Route::get('/delete_coupon/{coupon_id}', [
     CouponController::class, 
     'delete_coupon'
 ]);
+//map
+

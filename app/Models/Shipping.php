@@ -15,5 +15,9 @@ class Shipping extends Model
     {
         return $this->belongsTo(Order::class, 'shipping_id', 'shipping_id');
     }
+    public function location()
+    {
+        return $this->hasOne(Location::class, 'shipping_id', 'shipping_id');
+    }
     protected $fillable = ['shipping_email', 'shipping_name', 'shipping_phone', 'shipping_address', 'shipping_notes', 'customer_id'];
 }

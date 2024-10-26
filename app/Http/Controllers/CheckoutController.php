@@ -13,6 +13,7 @@ use App\Models\Order;
 use App\Models\OrderDetails;
 use App\Models\Payment;
 use App\Models\Coupon;
+use App\Models\Location;
 use Darryldecode\Cart\Facades\CartFacade as Cart; // Sử dụng Facade
 
 class CheckoutController extends Controller
@@ -115,6 +116,16 @@ class CheckoutController extends Controller
                     'product_sales_quantity' => $cartItem->quantity
                 ]);
             }
+            $latitude = $request->input('latitude');
+            $shipping_id = Session::get('shipping_id');
+            $longitude = $request->input('longitude');
+            $distance = $request->input('distance');
+            Location::create([
+                'shipping_id' => $shipping_id,
+                'latitude' => $latitude,
+                'longitude' => $longitude,
+                'distance' => $distance
+            ]);
         }
         else
         {
@@ -148,10 +159,22 @@ class CheckoutController extends Controller
                 ]);
             }
             Coupon::where('coupon_id', $coupon->coupon_id)->decrement('coupon_number');
+            $latitude = $request->input('latitude');
+            $shipping_id = Session::get('shipping_id');
+            $longitude = $request->input('longitude');
+            $distance = $request->input('distance');
+            Location::create([
+                'shipping_id' => $shipping_id,
+                'latitude' => $latitude,
+                'longitude' => $longitude,
+                'distance' => $distance
+            ]);
         }
         Session::forget('coupon');
-        Session::put('success', 'Đặt hàng thành công! Cảm ơn bạn đã mua hàng.');
+        Session::forget('shipping_id');
+        Session::forget('cart');
         Cart::clear();
+        Session::put('success1', 'Đặt hàng thành công! Cảm ơn bạn đã mua hàng.');
         return Redirect::to('/payment');
     }
     public function manage_order()
