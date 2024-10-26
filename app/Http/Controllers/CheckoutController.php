@@ -12,6 +12,7 @@ use App\Models\Shipping;
 use App\Models\Order;
 use App\Models\OrderDetails;
 use App\Models\Payment;
+use App\Models\Coupon;
 use Darryldecode\Cart\Facades\CartFacade as Cart; // Sử dụng Facade
 
 class CheckoutController extends Controller
@@ -90,27 +91,65 @@ class CheckoutController extends Controller
     }
     public function order_place(Request $request)
     {
-        $inserted_payment = Payment::create([
-            'payment_method' => $request['payment_option'],
-            'payment_status' => "1",
-            
-        ]);
-        $inserted_order = Order::create([
-            'customer_id' => Session::get('customer_id'),
-            'shipping_id' => Session::get('shipping_id'),
-            'payment_id' => $inserted_payment->payment_id,
-            'order_total' => Cart::getTotal()*1.1,
-            'order_status' => '1'
-        ]);
-        $cartItems = Session::get('cart', collect());
-        foreach ($cartItems as $cartItem)
+        $coupon = Session::get('coupon');
+        if(!$coupon)
         {
-            OrderDetails::create([
-                "order_id"=> $inserted_order->order_id,
-                "product_id" => $cartItem->id,
-                'product_sales_quantity' => $cartItem->quantity
+            $inserted_payment = Payment::create([
+                'payment_method' => $request['payment_option'],
+                'payment_status' => "1",
+                
             ]);
+            $inserted_order = Order::create([
+                'customer_id' => Session::get('customer_id'),
+                'shipping_id' => Session::get('shipping_id'),
+                'payment_id' => $inserted_payment->payment_id,
+                'order_total' => Cart::getTotal()*1.1,
+                'order_status' => '1'
+            ]);
+            $cartItems = Session::get('cart', collect());
+            foreach ($cartItems as $cartItem)
+            {
+                OrderDetails::create([
+                    "order_id"=> $inserted_order->order_id,
+                    "product_id" => $cartItem->id,
+                    'product_sales_quantity' => $cartItem->quantity
+                ]);
+            }
         }
+        else
+        {
+            $inserted_payment = Payment::create([
+                'payment_method' => $request['payment_option'],
+                'payment_status' => "1",
+                
+            ]);
+            if($coupon->coupon_desc == 0)
+            {
+                $cartTotal = Cart::getTotal()*1.1 - $coupon->coupon_value;
+            }
+            else
+            {
+                $cartTotal = Cart::getTotal()*1.1*(100 - $coupon->coupon_value)/100;
+            }
+            $inserted_order = Order::create([
+                'customer_id' => Session::get('customer_id'),
+                'shipping_id' => Session::get('shipping_id'),
+                'payment_id' => $inserted_payment->payment_id,
+                'order_total' => $cartTotal,
+                'order_status' => '1'
+            ]);
+            $cartItems = Session::get('cart', collect());
+            foreach ($cartItems as $cartItem)
+            {
+                OrderDetails::create([
+                    "order_id"=> $inserted_order->order_id,
+                    "product_id" => $cartItem->id,
+                    'product_sales_quantity' => $cartItem->quantity
+                ]);
+            }
+            Coupon::where('coupon_id', $coupon->coupon_id)->decrement('coupon_number');
+        }
+        Session::forget('coupon');
         Session::put('success', 'Đặt hàng thành công! Cảm ơn bạn đã mua hàng.');
         Cart::clear();
         return Redirect::to('/payment');
@@ -123,10 +162,10 @@ class CheckoutController extends Controller
     public function delete_order($order_id) 
     {
         $delete = Order::find( $order_id );
-        Order::destroy($order_id);
-        OrderDetails::destroy($order_id);
+        OrderDetails::where('order_id', $order_id)->delete();
         Shipping::destroy($delete->shipping_id);
         Payment::destroy($delete->payment_id);
+        Order::destroy($order_id);
         Session::put("message", "Xóa sản phẩm thành công");
         return Redirect::to("manage_order");
     }

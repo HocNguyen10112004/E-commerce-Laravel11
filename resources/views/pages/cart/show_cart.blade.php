@@ -71,54 +71,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="chose_area">
-                        <ul class="user_option">
-                            <li>
-                                <input type="checkbox">
-                                <label>Use Coupon Code</label>
-                            </li>
-                            <li>
-                                <input type="checkbox">
-                                <label>Use Gift Voucher</label>
-                            </li>
-                            <li>
-                                <input type="checkbox">
-                                <label>Estimate Shipping & Taxes</label>
-                            </li>
-                        </ul>
-                        <ul class="user_info">
-                            <li class="single_field">
-                                <label>Country:</label>
-                                <select>
-                                    <option>United States</option>
-                                    <option>Bangladesh</option>
-                                    <option>UK</option>
-                                    <option>India</option>
-                                    <option>Pakistan</option>
-                                    <option>Ucrane</option>
-                                    <option>Canada</option>
-                                    <option>Dubai</option>
-                                </select>
 
-                            </li>
-                            <li class="single_field">
-                                <label>Region / State:</label>
-                                <select>
-                                    <option>Select</option>
-                                    <option>Dhaka</option>
-                                    <option>London</option>
-                                    <option>Dillih</option>
-                                    <option>Lahore</option>
-                                    <option>Alaska</option>
-                                    <option>Canada</option>
-                                    <option>Dubai</option>
-                                </select>
-
-                            </li>
-                            <li class="single_field zip-field">
-                                <label>Zip Code:</label>
-                                <input type="text">
-                            </li>
-                        </ul>
                         <a class="btn btn-default update" href="">Get Quotes</a>
                         <a class="btn btn-default check_out" href="">Continue</a>
                     </div>
@@ -131,13 +84,46 @@
                             <li>Phí vận chuyển<span>0</span></li>
                             <li>Thành tiền: <span id="final">{{ number_format($totalAmount * 1.1) . ' VNĐ' }}</span>
                             </li>
+                            <br>
+                            <form action="{{ URL::to('/check_coupon') }}" method="POST">
+                                @csrf
+                                <div class="row align-items-center">
+                                    <div class="col-sm-8">
+                                        <input type="text" name="input_coupon" class="col-sm-6 form-control"
+                                            placeholder="Nhập mã giảm giá">
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <button type="submit" class="btn"
+                                            style="background-color: orange; color:aliceblue; width: 100%">
+                                            Áp mã
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                            @php
+                                $message = Session::get('coupon_apply');
+                                if ($message) {
+                                    echo $message;
+                                    Session::put('coupon_apply', null);
+                                }
+                            @endphp
+                            @if (Session::get('customer_id') != null)
+                                <a href="{{ URL::to('/checkout') }}" class="btn"
+                                    style="background-color: orange; color:aliceblue; width: 100%"> Checkout</a>
+                            @else
+                                <a href="{{ URL::to('/login_checkout') }}" class="btn"
+                                    style="background-color: orange; color:aliceblue; width: 100%">Checkout</a>
+                            @endif
                         </ul>
                         {{-- <a class="btn btn-default check_out" href="/login_checkout">Check Out</a> --}}
-                        @if (Session::get('customer_id') != null)
+                        {{-- @if (Session::get('customer_id') != null)
                             <a href="{{ URL::to('/checkout') }}" class="btn btn-default check_out"> Checkout</a>
                         @else
                             <a href="{{ URL::to('/login_checkout') }}" class="btn btn-default check_out">Checkout</a>
-                        @endif
+                        @endif --}}
+
                     </div>
                 </div>
             </div>

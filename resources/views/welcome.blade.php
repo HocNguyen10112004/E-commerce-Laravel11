@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta property="og:title" content="Tiêu đề của bạn" />
+    <meta property="og:description" content="Mô tả ngắn về nội dung" />
+    {{-- <meta property="og:image" content="URL của hình ảnh" /> --}}
+    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:type" content="website" />
     <title>Home | E-Shopper</title>
     <link href="{{ asset('frontend/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('frontend/css/font-awesome.min.css') }}" rel="stylesheet">
@@ -29,10 +34,9 @@
 </head><!--/head-->
 
 <body>
-    @php
-        echo Session::get('customer_id');
-        echo Session::get('shipping_id');
-    @endphp
+    <div class="fb-share-button" data-href="http://127.0.0.1:8000" data-layout="" data-size=""><a target="_blank"
+            href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2F127.0.0.1%3A8000%2F&amp;src=sdkpreparse"
+            class="fb-xfbml-parse-ignore">Chia sẻ</a></div>
     <header id="header"><!--header-->
         <div class="header_top"><!--header_top-->
             <div class="container">
@@ -456,6 +460,9 @@
     <script src="{{ asset('frontend/js/price-range.js') }}"></script>
     <script src="{{ asset('frontend/js/jquery.prettyPhoto.js') }}"></script>
     <script src="{{ asset('frontend/js/main.js') }}"></script>
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v21.0">
+    </script>
 
 </body>
 

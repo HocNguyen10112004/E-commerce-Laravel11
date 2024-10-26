@@ -12,11 +12,20 @@
                                 <div class="productinfo text-center">
                                     <img src="{{ URL::to('uploads/product/' . $item->product_image) }}" height="300px"
                                         width="100px" alt="" />
-                                    <h2>{{ number_format((int) $item->product_price) . ' ' . 'VNĐ' }}</h2>
-                                    <p>{{ $item->product_name }}</p>
-                                    <a href="#" class="btn btn-default add-to-cart">
-                                        <i class="fa fa-shopping-cart"></i>Add to cart
-                                    </a>
+                                    <form action="{{ URL::to('/save_cart') }}", method="POST">
+                                        @csrf
+                                        <span>
+                                            <h2>{{ number_format((int) $item->product_price) . ' ' . 'VNĐ' }}</h2>
+                                            <p>{{ $item->product_name }}</p>
+                                            <input name="qty" type="hidden" value="1" />
+                                            <input name="product_id_hidden" type="hidden"
+                                                value="{{ $item->product_id }}" />
+                                            <button type="submit" class="btn btn-fefault cart">
+                                                <i class="fa fa-shopping-cart"></i>
+                                                Add to cart
+                                            </button>
+                                        </span>
+                                    </form>
                                 </div>
                             </div>
                             <div class="choose">

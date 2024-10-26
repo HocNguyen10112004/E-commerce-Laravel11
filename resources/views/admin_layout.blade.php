@@ -141,6 +141,18 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
                             </ul>
                         </li>
+                        <li class="sub-menu">
+                            <a href="javascript:;">
+                                <i class="fa fa-book"></i>
+                                <span>Mã giảm giá</span>
+                            </a>
+                            <ul class="sub">
+                                <li><a href="{{ URL::to('/insert_coupon') }}">Quản lý mã giảm giá</a></li>
+                                <li><a href="{{ URL::to('/list_coupon') }}">Liệt kê mã giảm giá</a></li>
+
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
         </aside>
         <!--sidebar end-->

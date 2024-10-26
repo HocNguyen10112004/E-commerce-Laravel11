@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\Product; // Thêm model ở đây
 use App\Models\CategoryProduct;
 use App\Models\BrandProduct;
+use App\Models\Coupon;
 use Darryldecode\Cart\Facades\CartFacade as Cart; // Sử dụng Facade
 class CartController extends Controller
 {
@@ -93,6 +94,28 @@ class CartController extends Controller
             'message' => 'Số lượng đã được cập nhật.',
             'totalAmount' => $totalAmount
         ]);
+    }
+    public function check_coupon(Request $request)
+    {
+        $input_coupon_code = $request->input('input_coupon');
+        if(!$input_coupon_code)
+        {
+            Session::put('coupon_apply', "Chưa nhập mã giảm giá");
+        }
+        else 
+        {
+            $coupon = Coupon::where('coupon_code', $input_coupon_code)->first();
+            if($coupon)
+            {
+                Session::put('coupon', $coupon);
+                Session::put('coupon_apply', "Áp dụng mã giảm giá thành công");
+            }
+            else
+            {
+                Session::put('coupon_apply', "Mã giảm giá sai hoặc đã hết hạn");
+            }
+        }
+        return Redirect::back();
     }
 
 }

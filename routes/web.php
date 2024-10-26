@@ -10,6 +10,7 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\PaymentMiddleware;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CouponController;
 //Front
 Route::get('/', [
     HomeController::class,
@@ -210,4 +211,26 @@ Route::get('/delete_order/{order_id}', [
 Route::get('/edit_order/{order_id}', [
     CheckoutController::class, 
     'view_order'
+]);
+
+//coupon
+Route::get('/insert_coupon', [
+    CouponController::class, 
+    'insert_coupon'
+]);
+Route::post('/check_coupon', [
+    CartController::class, 
+    'check_coupon'
+]);
+Route::post('/insert_coupon_code', [
+    CouponController::class,   
+    'insert_coupon_code'
+]);
+Route::get('/list_coupon', [
+    CouponController::class, 
+    'list_coupon'
+]);
+Route::get('/delete_coupon/{coupon_id}', [
+    CouponController::class, 
+    'delete_coupon'
 ]);
