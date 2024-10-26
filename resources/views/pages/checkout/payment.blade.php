@@ -112,6 +112,37 @@
         var marker;
         var routeControl;
 
+        // map.on('click', function(e) {
+        //     var lat = e.latlng.lat;
+        //     var lng = e.latlng.lng;
+
+        //     if (marker) {
+        //         map.removeLayer(marker);
+        //     }
+
+        //     marker = L.marker([lat, lng]).addTo(map);
+        //     document.getElementById('latitude').value = lat.toFixed(6);
+        //     document.getElementById('longitude').value = lng.toFixed(6);
+
+        //     // Tính khoảng cách
+        //     var distance1 = map.distance(startLocation, [lat, lng]);
+        //     // var distance2 = e.routes[0].summary.totalDistance; // Khoảng cách đường bộ trong mét
+
+        //     document.getElementById('distance').value = (distance1 / 1000).toFixed(2);
+
+        //     if (routeControl) {
+        //         map.removeControl(routeControl);
+        //     }
+
+        //     // Tạo đường đi từ điểm gốc đến vị trí người dùng chọn
+        //     routeControl = L.Routing.control({
+        //         waypoints: [
+        //             L.latLng(startLocation[0], startLocation[1]),
+        //             L.latLng(lat, lng)
+        //         ],
+        //         routeWhileDragging: true
+        //     }).addTo(map);
+        // });
         map.on('click', function(e) {
             var lat = e.latlng.lat;
             var lng = e.latlng.lng;
@@ -124,22 +155,33 @@
             document.getElementById('latitude').value = lat.toFixed(6);
             document.getElementById('longitude').value = lng.toFixed(6);
 
-            // Tính khoảng cách
-            var distance1 = map.distance(startLocation, [lat, lng]);
-            document.getElementById('distance').value = (distance1 / 1000).toFixed(2);
-
-            if (routeControl) {
-                map.removeControl(routeControl);
-            }
-
-            // Tạo đường đi từ điểm gốc đến vị trí người dùng chọn
-            routeControl = L.Routing.control({
-                waypoints: [
+            // Nếu routeControl đã tồn tại, không cần xóa nó, chỉ cập nhật waypoint
+            if (!routeControl) {
+                // Tạo đường đi lần đầu
+                routeControl = L.Routing.control({
+                    waypoints: [
+                        L.latLng(startLocation[0], startLocation[1]),
+                        L.latLng(lat, lng)
+                    ],
+                    routeWhileDragging: true,
+                    createMarker: function() {
+                        return null;
+                    } // Không tạo marker cho các waypoint
+                }).addTo(map);
+            } else {
+                // Cập nhật waypoint cho routeControl đã tồn tại
+                routeControl.setWaypoints([
                     L.latLng(startLocation[0], startLocation[1]),
                     L.latLng(lat, lng)
-                ],
-                routeWhileDragging: true
-            }).addTo(map);
+                ]);
+            }
+
+            // Cập nhật khoảng cách
+            routeControl.on('routesfound', function(e) {
+                var distance = e.routes[0].summary.totalDistance; // Khoảng cách đường bộ trong mét
+                document.getElementById('distance').value = (distance / 1000).toFixed(
+                    2); // Chuyển đổi sang km
+            });
         });
     </script>
 @endsection
