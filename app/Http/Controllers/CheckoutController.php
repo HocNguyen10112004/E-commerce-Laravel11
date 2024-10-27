@@ -15,7 +15,7 @@ use App\Models\Payment;
 use App\Models\Coupon;
 use App\Models\Location;
 use Darryldecode\Cart\Facades\CartFacade as Cart; // Sử dụng Facade
-
+use Barryvdh\DomPDF\Facade\Pdf;
 class CheckoutController extends Controller
 {
     public function login_checkout(Request $request)
@@ -199,5 +199,25 @@ class CheckoutController extends Controller
         return view("admin.view_order")->with("order", $order)->with("collection", $collection);
 
     }
-    
+    public function save_pdf($order_id)
+    {
+        // Lấy thông tin đơn hàng cùng các thông tin liên quan
+        $order = Order::with(["shipping", "customer", "payment"])->find($order_id);
+        $collection = OrderDetails::with("product")->where("order_id", $order_id)->get();
+        
+        // Kiểm tra nếu không tìm thấy đơn hàng
+        if (!$order) {
+            abort(404);
+        }
+
+        // Chỉ render phần nội dung của view_order
+        $html = view('admin.view_order', compact('order', 'collection'))->render();
+
+        // Tạo PDF từ HTML
+        $pdf = Pdf::loadHTML($html);
+
+        // Tải xuống PDF
+        return $pdf->download('view_order_' . $order_id . '.pdf');
+    }
+
 }

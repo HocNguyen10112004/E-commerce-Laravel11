@@ -213,6 +213,10 @@ Route::get('/edit_order/{order_id}', [
     CheckoutController::class, 
     'view_order'
 ]);
+Route::get('/save_pdf/{order_id}', [
+    CheckoutController::class, 
+    'save_pdf'
+]);
 
 //coupon
 Route::get('/insert_coupon', [
