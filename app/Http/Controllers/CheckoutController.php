@@ -16,6 +16,8 @@ use App\Models\Coupon;
 use App\Models\Location;
 use Darryldecode\Cart\Facades\CartFacade as Cart; // Sử dụng Facade
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Mail\OrderConfirmationEmail;
+use Illuminate\Support\Facades\Mail;
 class CheckoutController extends Controller
 {
     public function login_checkout(Request $request)
@@ -170,6 +172,10 @@ class CheckoutController extends Controller
                 'distance' => $distance
             ]);
         }
+        // Gửi email xác nhận cho người dùng
+        $customer_id = Session::get('customer_id');
+        $customer = Customer::find($customer_id);
+        Mail::to($customer->customer_email)->send(new OrderConfirmationEmail());
         Session::forget('coupon');
         Session::forget('shipping_id');
         Session::forget('cart');

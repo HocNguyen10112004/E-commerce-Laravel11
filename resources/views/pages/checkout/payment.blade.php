@@ -2,13 +2,7 @@
 @section('content')
     <section id="cart_items" class="col-sm-9">
         <div class="">
-            @if (Session::get('success1'))
-                <div class="alert alert-success">
-                    {{ Session::get('success1') }}
 
-                </div>
-                {{ Session::put('success1', null) }}
-            @endif
             <div class="">
                 <div class="breadcrumbs">
                     <ol class="breadcrumb">
