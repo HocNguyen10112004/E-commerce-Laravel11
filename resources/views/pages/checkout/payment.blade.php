@@ -77,7 +77,8 @@
                 <label for="">Tọa độ longitude</label>
                 <input name="longitude" readonly type="text" id="longitude">
                 <br>
-                <label>Khoảng cách tính theo km"</label>
+                <label>Khoảng cách tính theo km, tiền ship sẽ được tính theo quãng đường với đơn giá 100vnđ/km (làm tròn tới
+                    1000)</label>
                 <input name="distance" readonly type="text" id="distance">
                 <br>
                 <span>

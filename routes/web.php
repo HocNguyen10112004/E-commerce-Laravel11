@@ -217,6 +217,7 @@ Route::get('/edit_order/{order_id}', [
     CheckoutController::class, 
     'view_order'
 ]);
+//xuất pdf
 Route::get('/save_pdf/{order_id}', [
     CheckoutController::class, 
     'save_pdf'
@@ -243,5 +244,15 @@ Route::get('/delete_coupon/{coupon_id}', [
     CouponController::class, 
     'delete_coupon'
 ]);
+//password
+Route::get('/reset_password', [
+    CheckoutController::class, 
+    'reset_password'
+]);
+Route::post('/resend_password', [
+    CheckoutController::class,   
+    'resend_password'
+]);
+
 
 

@@ -88,7 +88,6 @@
                         <ul>
                             <li>Tổng<span id="ajax">{{ number_format((int) $totalAmount) . ' ' . 'VNĐ' }}</span></li>
                             <li>Thuế<span>10%</span></li>
-                            <li>Phí vận chuyển<span>0</span></li>
                             <li>Thành tiền: <span id="final">{{ number_format($totalAmount * 1.1) . ' VNĐ' }}</span>
                             </li>
                             <br>

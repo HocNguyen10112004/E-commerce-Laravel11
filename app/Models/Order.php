@@ -27,5 +27,5 @@ class Order extends Model
     {
         return $this->hasOne(Payment::class, 'payment_id', 'payment_id');
     }
-    protected $fillable = ['customer_id', 'shipping_id', 'payment_id', 'order_total', 'order_status'];
+    protected $fillable = ['customer_id', 'shipping_id', 'payment_id', 'order_total', 'order_status', 'order_feeshipping'];
 }

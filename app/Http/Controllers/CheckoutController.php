@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Mail\PasswordEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
@@ -18,6 +19,7 @@ use Darryldecode\Cart\Facades\CartFacade as Cart; // Sử dụng Facade
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Mail\OrderConfirmationEmail;
 use Illuminate\Support\Facades\Mail;
+use Str;
 class CheckoutController extends Controller
 {
     public function login_checkout(Request $request)
@@ -29,16 +31,22 @@ class CheckoutController extends Controller
     }
     public function add_customer(Request $request)
     {
+        $existingCustomer = Customer::where('customer_email', $request['customer_email'])->first();
+        $existingCustomer1 = Customer::where('customer_phone', $request['customer_phone'])->first();
+        if ($existingCustomer or $existingCustomer1) {
+            Session::put('error','Email hoặc số điện thoại đã tồn tại!');
+            return Redirect::back();
+        }
+        // Tạo mật khẩu ngẫu nhiên
+        $randomPassword = Str::random(10);
         $inserted = Customer::create([
             'customer_name' => $request['customer_name'],
             'customer_email' => $request['customer_email'],
-            'customer_password' => $request['customer_password'],
+            'customer_password' => $randomPassword,
             'customer_phone' => $request['customer_phone'],
         ]);
-        $customer_id = $inserted->customer_id;
-        Session::put('customer_id', $customer_id);
-        Session::put('customer_name', $request['customer_name']);
-        return Redirect::to('/checkout');
+        Mail::to($inserted->customer_email)->send(new PasswordEmail($randomPassword));
+        return Redirect::back();
     }
     public function checkout()
     {
@@ -85,10 +93,11 @@ class CheckoutController extends Controller
         if ($user) 
         {
             Session::put('customer_id', $user->customer_id);
-            return Redirect::to('/checkout');
+            return Redirect::to('/');
         } 
         else 
         {
+            Session::put('wrongacc','Tài khoản hoặc mật khẩu sai!');
             return Redirect::to('/login_checkout');
         }
     }
@@ -97,6 +106,10 @@ class CheckoutController extends Controller
         $coupon = Session::get('coupon');
         if(!$coupon)
         {
+            $latitude = $request->input('latitude');
+            $shipping_id = Session::get('shipping_id');
+            $longitude = $request->input('longitude');
+            $distance = $request->input('distance');
             $inserted_payment = Payment::create([
                 'payment_method' => $request['payment_option'],
                 'payment_status' => "1",
@@ -106,6 +119,7 @@ class CheckoutController extends Controller
                 'customer_id' => Session::get('customer_id'),
                 'shipping_id' => Session::get('shipping_id'),
                 'payment_id' => $inserted_payment->payment_id,
+                'order_feeshipping' => round($distance)*1000,
                 'order_total' => Cart::getTotal()*1.1,
                 'order_status' => '1'
             ]);
@@ -118,10 +132,7 @@ class CheckoutController extends Controller
                     'product_sales_quantity' => $cartItem->quantity
                 ]);
             }
-            $latitude = $request->input('latitude');
-            $shipping_id = Session::get('shipping_id');
-            $longitude = $request->input('longitude');
-            $distance = $request->input('distance');
+            
             Location::create([
                 'shipping_id' => $shipping_id,
                 'latitude' => $latitude,
@@ -136,6 +147,10 @@ class CheckoutController extends Controller
                 'payment_status' => "1",
                 
             ]);
+            $latitude = $request->input('latitude');
+            $shipping_id = Session::get('shipping_id');
+            $longitude = $request->input('longitude');
+            $distance = $request->input('distance');
             if($coupon->coupon_desc == 0)
             {
                 $cartTotal = Cart::getTotal()*1.1 - $coupon->coupon_value;
@@ -148,6 +163,7 @@ class CheckoutController extends Controller
                 'customer_id' => Session::get('customer_id'),
                 'shipping_id' => Session::get('shipping_id'),
                 'payment_id' => $inserted_payment->payment_id,
+                'order_feeshipping' => round($distance)*1000,
                 'order_total' => $cartTotal,
                 'order_status' => '1'
             ]);
@@ -161,10 +177,7 @@ class CheckoutController extends Controller
                 ]);
             }
             Coupon::where('coupon_id', $coupon->coupon_id)->decrement('coupon_number');
-            $latitude = $request->input('latitude');
-            $shipping_id = Session::get('shipping_id');
-            $longitude = $request->input('longitude');
-            $distance = $request->input('distance');
+            
             Location::create([
                 'shipping_id' => $shipping_id,
                 'latitude' => $latitude,
@@ -225,5 +238,25 @@ class CheckoutController extends Controller
         // Tải xuống PDF
         return $pdf->download('view_order_' . $order_id . '.pdf');
     }
-
+    public function reset_password()
+    {
+        
+        $category_product = CategoryProduct::where('category_status', '1')->orderBy('category_id', 'desc')->get();
+        $brand_product = BrandProduct::where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
+        return view('pages.checkout.reset_password')->with('category', $category_product)
+                                                ->with('brand', $brand_product);
+    }
+    public function resend_password(Request $request)
+    {
+        $customer_email = $request->input('email');
+        $customer = Customer::where('customer_email', $customer_email)->first();
+        if (!$customer) {
+            Session::put('wrong_email','Email không tồn tại!');
+            return Redirect::back();
+        }
+        $randomPassword = Str::random(10);
+        Customer::where('customer_email', $customer_email)->update(['customer_password'=> $randomPassword]);
+        Mail::to($customer_email)->send(new PasswordEmail($randomPassword));
+        return Redirect::to('login_checkout');
+    }
 }
