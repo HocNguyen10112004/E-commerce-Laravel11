@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\BrandProduct; // Thêm model ở đây
 use App\Models\CategoryProduct; // Thêm model ở đây
 use App\Models\Product;
+
 class BrandProductController extends Controller
 {
     public function add_brand_product()

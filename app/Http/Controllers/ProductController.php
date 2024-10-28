@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\Product; // Thêm model ở đây
 use App\Models\CategoryProduct;
 use App\Models\BrandProduct;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 class ProductController extends Controller
 {
     public function add_product()
@@ -116,4 +117,45 @@ class ProductController extends Controller
                                                         ->with('product', $product)
                                                         ->with('related_products', $related_products);
     }
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls'
+        ]);
+
+        $spreadsheet = IOFactory::load($request->file('file')->path());
+        $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+
+        foreach ($sheetData as $row) {
+            // Bỏ qua dòng đầu tiên nếu đó là tiêu đề
+            if ($row['A'] == 'Product name') {
+                continue;
+            }
+
+            // Kiểm tra xem có ô nào trong hàng bị trống
+            if (empty($row['A']) || empty($row['B']) || empty($row['C']) || empty($row['D']) || empty($row['E'])) {
+                continue; // Bỏ qua hàng này
+            }
+
+            // Xử lý hình ảnh
+            // Giả sử hình ảnh được lưu trữ dưới dạng tên file
+            $imagePath = $row['C']; // Đường dẫn hình ảnh trong Excel
+            $fileName = basename($imagePath);
+            copy($imagePath, 'uploads/product/'. $fileName);
+            // Lưu thông tin sản phẩm vào cơ sở dữ liệu
+            Product::create([
+                'product_name' => $row['A'],
+                'product_price' => $row['B'],
+                'product_image' => $fileName,
+                'category_id' => $row['D'],
+                'brand_id' => $row['E'],
+                'product_content' => $row['F'],
+                'product_desc' => $row['G'],
+                'product_status' => $row['H'],
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Products imported successfully!');
+    }
+
 }

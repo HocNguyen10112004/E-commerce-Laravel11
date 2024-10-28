@@ -140,6 +140,10 @@ Route::middleware(AdminMiddleware::class)->group(function () {
         ProductController::class,   
         'update_product'
     ] );
+    Route::post('/import', [
+        ProductController::class,   
+        'import'
+    ] );
 
 });
 
@@ -239,5 +243,5 @@ Route::get('/delete_coupon/{coupon_id}', [
     CouponController::class, 
     'delete_coupon'
 ]);
-//map
+
 
