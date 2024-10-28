@@ -37,10 +37,28 @@ class CartController extends Controller
         $cartItems = Session::get('cart', collect());
         // Tính tổng tiền
         $totalAmount = $this->getTotalAmount($cartItems);
+        if (Session::has('coupon')) {
+            $coupon = Session::get('coupon');
+            $value_coupon = $coupon->coupon_value;
+            $class_coupon = $coupon->coupon_desc;
+            if($class_coupon==0)
+            {
+                $totalAmountAfter = Cart::getTotal()*1.1 - $value_coupon;
+            }
+            else
+            {
+                $totalAmountAfter = Cart::getTotal()*1.1*(100-$value_coupon)/100;
+            }
+        }
+        else
+        {
+            $totalAmountAfter = Cart::getTotal()*1.1;
+        }
         return view("pages.cart.show_cart")->with('category', $category_product)
                                                 ->with('brand', $brand_product)
                                                 ->with('cartItems', $cartItems)
-                                                ->with('totalAmount', $totalAmount);
+                                                ->with('totalAmount', $totalAmount)
+                                                ->with('totalAmountAfter', $totalAmountAfter);
     }
     public function getTotalAmount($cartItems)
     {
@@ -52,14 +70,33 @@ class CartController extends Controller
     {
         // Xóa sản phẩm khỏi giỏ hàng
         Cart::remove($id);
-        
+        if (Session::has('coupon')) {
+            $coupon = Session::get('coupon');
+            $value_coupon = $coupon->coupon_value;
+            $class_coupon = $coupon->coupon_desc;
+            if($class_coupon==0)
+            {
+                $newvalueafter = Cart::getTotal()*1.1 - $value_coupon;
+            }
+            else
+            {
+                $newvalueafter = Cart::getTotal()*1.1*(100-$value_coupon)/100;
+            }
+        }
+        else
+        {
+            $newvalueafter = Cart::getTotal()*1.1;
+        }
         // Cập nhật lại session (nếu cần)
         Session::put("cart", Cart::getContent());
-
+        $new_value = Cart::getTotal();
+        
         // Trả về JSON response
         return response()->json([
             'success' => true,
             'message' => 'Sản phẩm đã được xóa khỏi giỏ hàng.',
+            'newvalue' => $new_value,
+            'newvalueafter'=> $newvalueafter,
             'cart' => Cart::getContent() // có thể trả về nội dung giỏ hàng nếu cần
         ]);
     }
@@ -71,7 +108,6 @@ class CartController extends Controller
         // Cart::update($itemId, array('quantity'=> $quantity));
         Cart::remove($itemId);
         $product_infor = Product::find($itemId);
-        $sessionId = session()->getId(); // lấy session ID của người dùng hiện tại
         Cart::add([
         'id' => $itemId, // ID sản phẩm
         'name' => $product_infor->product_name, // Tên sản phẩm
@@ -85,14 +121,30 @@ class CartController extends Controller
         Session::put("cart", Cart::getContent());
 
         // Tính lại tổng tiền giỏ hàng
-        $cartItems = Session::get('cart', collect());
-        $totalAmount = $this->getTotalAmount($cartItems);
-
+        $totalAmount = Cart::getTotal();
+        if (Session::has('coupon')) {
+            $coupon = Session::get('coupon');
+            $value_coupon = $coupon->coupon_value;
+            $class_coupon = $coupon->coupon_desc;
+            if($class_coupon==0)
+            {
+                $newvalueafter = Cart::getTotal()*1.1 - $value_coupon;
+            }
+            else
+            {
+                $newvalueafter = Cart::getTotal()*1.1*(100-$value_coupon)/100;
+            }
+        }
+        else
+        {
+            $newvalueafter = Cart::getTotal()*1.1;
+        }
         // Trả về JSON response
         return response()->json([
             'success' => true,
             'message' => 'Số lượng đã được cập nhật.',
-            'totalAmount' => $totalAmount
+            'totalAmount' => $totalAmount,
+            'newvalueafter'=> $newvalueafter,
         ]);
     }
     public function check_coupon(Request $request)
@@ -108,7 +160,7 @@ class CartController extends Controller
             if($coupon)
             {
                 Session::put('coupon', $coupon);
-                Session::put('coupon_apply', "Áp dụng mã giảm giá thành công");
+                Session::put('coupon_apply', "Áp dụng mã giảm giá " . $coupon->coupon_code . " thành công");
             }
             else
             {
@@ -117,5 +169,21 @@ class CartController extends Controller
         }
         return Redirect::back();
     }
+    // public function check_coupon(Request $request)
+    // {
+    //     $input_coupon_code = $request->input('input_coupon');
+    //     if (!$input_coupon_code) {
+    //         return response()->json(['message' => "Chưa nhập mã giảm giá"], 400);
+    //     } else {
+    //         $coupon = Coupon::where('coupon_code', $input_coupon_code)->first();
+    //         if ($coupon) {
+    //             Session::put('coupon', $coupon);
+    //             return response()->json(['message' => "Áp dụng mã giảm giá " . $coupon->coupon_code . " thành công"], 200);
+    //         } else {
+    //             return response()->json(['message' => "Mã giảm giá sai hoặc đã hết hạn"], 400);
+    //         }
+    //     }
+    // }
+
 
 }

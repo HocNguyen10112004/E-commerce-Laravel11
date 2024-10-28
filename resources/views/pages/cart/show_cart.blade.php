@@ -88,10 +88,15 @@
                         <ul>
                             <li>Tổng<span id="ajax">{{ number_format((int) $totalAmount) . ' ' . 'VNĐ' }}</span></li>
                             <li>Thuế<span>10%</span></li>
-                            <li>Thành tiền: <span id="final">{{ number_format($totalAmount * 1.1) . ' VNĐ' }}</span>
+                            <li>Thành tiền:
+                                <span id="final">
+                                    {{ number_format((int) $totalAmountAfter) . ' ' . 'VNĐ' }}
+                                </span>
+
                             </li>
                             <br>
-                            <form action="{{ URL::to('/check_coupon') }}" method="POST">
+
+                            <form id="couponForm" action="{{ URL::to('/check_coupon') }}" method="POST">
                                 @csrf
                                 <div class="row align-items-center">
                                     <div class="col-sm-8">
@@ -108,11 +113,12 @@
 
                             </form>
 
+                            <div id="couponMessage"></div> <!-- Nơi hiển thị thông báo -->
                             @php
                                 $message = Session::get('coupon_apply');
                                 if ($message) {
                                     echo $message;
-                                    Session::put('coupon_apply', null);
+                                    // Session::put('coupon_apply', null);
                                 }
                             @endphp
                             @if (Session::get('customer_id') != null)
@@ -153,19 +159,9 @@
                     if (response.success) {
                         // Xóa hàng trực tiếp từ DOM
                         row.remove(); // Xóa hàng khỏi bảng
-                        var currentValue = parseInt($('#ajax').text().replace(/,/g, ''),
-                            10); // Chuyển đổi thành số nguyên
-                        var pr = parseInt(row.find('.cart_price p').data(
-                            'price')); // Lấy giá từ hàng hiện tại
-                        var qt = parseInt(row.find('.cart_quantity_input')
-                            .val()); // Lấy số lượng từ hàng hiện tại
-
-
-                        var newValue = currentValue - pr * qt;
-
                         // Cập nhật lại nội dung của phần tử
-                        $('#ajax').text(newValue.toLocaleString() + ' VNĐ');
-                        $('#final').text((newValue * 1.1).toLocaleString() + ' VNĐ');
+                        $('#ajax').text(response.newvalue.toLocaleString() + ' VNĐ');
+                        $('#final').text((response.newvalueafter).toLocaleString() + ' VNĐ');
                         alert(response.message); // Hiển thị thông báo thành công
                     } else {
                         alert('Có lỗi xảy ra: ' + response.message);
@@ -178,6 +174,9 @@
         }
     });
 </script>
+
+
+
 <script>
     $(document).ready(function() {
         // Khi nhấn nút tăng hoặc giảm số lượng
@@ -191,7 +190,6 @@
             var price = parseFloat($row.find('.cart_price p').data('price'));
             var productId = $row.data('id'); // Giả sử bạn có lưu id sản phẩm trong thẻ tr
             var action = $(this).hasClass('cart_quantity_up') ? 'increase' : 'decrease';
-
             // Tăng hoặc giảm số lượng dựa trên nút nhấn
             if (action === 'increase') {
                 quantity += 1;
@@ -219,7 +217,8 @@
                 success: function(response) {
                     // Cập nhật lại tổng giá trị của giỏ hàng nếu có
                     $('#ajax').text(response.totalAmount.toLocaleString() + ' VNĐ');
-                    $('#final').text((response.totalAmount * 1.1).toLocaleString() +
+
+                    $('#final').text((response.newvalueafter).toLocaleString() +
                         ' VNĐ');
                 },
                 error: function(xhr) {
@@ -254,7 +253,8 @@
                 success: function(response) {
                     // Cập nhật lại tổng giá trị của giỏ hàng nếu có
                     $('#ajax').text(response.totalAmount.toLocaleString() + ' VNĐ');
-                    $('#final').text((response.totalAmount * 1.1).toLocaleString() +
+
+                    $('#final').text((response.newvalueafter).toLocaleString() +
                         ' VNĐ');
                 },
                 error: function(xhr) {
@@ -264,3 +264,26 @@
         });
     });
 </script>
+
+{{-- <script>
+    $(document).ready(function() {
+        $('#couponForm').on('submit', function(e) {
+            e.preventDefault(); // Ngăn không cho form gửi dữ liệu theo cách thông thường
+            var formData = {
+                input_coupon: $('#input_coupon').val()
+                token: $('input[name="_token"]').val() // CSRF token
+            };
+            $.ajax({
+                url: '/check_coupon',
+                method: "POST",
+                data: formData,
+                success: function(response) {
+                    $('#couponMessage').text(response.message).css('color', 'green');
+                },
+                error: function(xhr) {
+                    $('#couponMessage').text(xhr.responseJSON.message).css('color', 'red');
+                }
+            });
+        });
+    });
+</script> --}}
