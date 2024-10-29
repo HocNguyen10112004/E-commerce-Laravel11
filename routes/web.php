@@ -204,45 +204,51 @@ Route::post('/order_place', [
 ]);
 //order
 Route::middleware(AdminMiddleware::class)->group(function () {
+    //order
     Route::get('/manage_order', [
         CheckoutController::class, 
         'manage_order'
     ]);
+    Route::get('/delete_order/{order_id}', [
+        CheckoutController::class,   
+        'delete_order'
+    ] ); 
+    Route::get('/edit_order/{order_id}', [
+        CheckoutController::class, 
+        'view_order'
+    ]);
+    Route::post('/verify_order/{order_id}', [
+        CheckoutController::class,   
+        'verify_order'
+    ]);
+    //coupon
+    Route::get('/insert_coupon', [
+        CouponController::class, 
+        'insert_coupon'
+    ]);
+    Route::post('/insert_coupon_code', [
+        CouponController::class,   
+        'insert_coupon_code'
+    ]);
+    Route::get('/list_coupon', [
+        CouponController::class, 
+        'list_coupon'
+    ]);
+    Route::get('/delete_coupon/{coupon_id}', [
+        CouponController::class, 
+        'delete_coupon'
+    ]);
+    //xuất pdf
+    Route::get('/save_pdf/{order_id}', [
+        CheckoutController::class, 
+        'save_pdf'
+    ]);
+    
 });
-Route::get('/delete_order/{order_id}', [
-    CheckoutController::class,   
-    'delete_order'
-] ); 
-Route::get('/edit_order/{order_id}', [
-    CheckoutController::class, 
-    'view_order'
-]);
-//xuất pdf
-Route::get('/save_pdf/{order_id}', [
-    CheckoutController::class, 
-    'save_pdf'
-]);
-
 //coupon
-Route::get('/insert_coupon', [
-    CouponController::class, 
-    'insert_coupon'
-]);
 Route::post('/check_coupon', [
     CartController::class, 
     'check_coupon'
-]);
-Route::post('/insert_coupon_code', [
-    CouponController::class,   
-    'insert_coupon_code'
-]);
-Route::get('/list_coupon', [
-    CouponController::class, 
-    'list_coupon'
-]);
-Route::get('/delete_coupon/{coupon_id}', [
-    CouponController::class, 
-    'delete_coupon'
 ]);
 //password
 Route::get('/reset_password', [
@@ -253,6 +259,13 @@ Route::post('/resend_password', [
     CheckoutController::class,   
     'resend_password'
 ]);
-
-
+//hístory_order
+Route::get('/history_order', [
+    CheckoutController::class, 
+    'history_order'
+]);
+Route::get('/delete_order_customer/{order_id}', [
+    CheckoutController::class,   
+    'delete_order_customer'
+] ); 
 

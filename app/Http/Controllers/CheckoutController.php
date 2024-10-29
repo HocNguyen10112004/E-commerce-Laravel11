@@ -121,7 +121,7 @@ class CheckoutController extends Controller
                 'payment_id' => $inserted_payment->payment_id,
                 'order_feeshipping' => round($distance)*1000,
                 'order_total' => Cart::getTotal()*1.1,
-                'order_status' => '1'
+                'order_status' => 'Đang chờ xác nhận'
             ]);
             $cartItems = Session::get('cart', collect());
             foreach ($cartItems as $cartItem)
@@ -165,7 +165,7 @@ class CheckoutController extends Controller
                 'payment_id' => $inserted_payment->payment_id,
                 'order_feeshipping' => round($distance)*1000,
                 'order_total' => $cartTotal,
-                'order_status' => '1'
+                'order_status' => 'Đang chờ xác nhận'
             ]);
             $cartItems = Session::get('cart', collect());
             foreach ($cartItems as $cartItem)
@@ -205,10 +205,11 @@ class CheckoutController extends Controller
     {
         $delete = Order::find( $order_id );
         OrderDetails::where('order_id', $order_id)->delete();
+        Location::where('shipping_id', $delete->shipping_id)->delete();
+        Order::destroy($order_id);
         Shipping::destroy($delete->shipping_id);
         Payment::destroy($delete->payment_id);
-        Order::destroy($order_id);
-        Session::put("message", "Xóa sản phẩm thành công");
+        Session::put("message", "Xóa đơn hàng thành công");
         return Redirect::to("manage_order");
     }
     public function view_order($order_id)
@@ -230,7 +231,7 @@ class CheckoutController extends Controller
         }
 
         // Chỉ render phần nội dung của view_order
-        $html = view('admin.view_order', compact('order', 'collection'))->render();
+        $html = view('admin.view_order_pdf', compact('order', 'collection'))->render();
 
         // Tạo PDF từ HTML
         $pdf = Pdf::loadHTML($html);
@@ -258,5 +259,62 @@ class CheckoutController extends Controller
         Customer::where('customer_email', $customer_email)->update(['customer_password'=> $randomPassword]);
         Mail::to($customer_email)->send(new PasswordEmail($randomPassword));
         return Redirect::to('login_checkout');
+    }
+    public function history_order()
+    {
+        $customer_id = Session::get('customer_id');
+        $category_product = CategoryProduct::where('category_status', '1')->orderBy('category_id', 'desc')->get();
+        $brand_product = BrandProduct::where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
+        $all_order = Order::with(['customer','shipping', 'payment'])->where('customer_id', $customer_id)->orderBy('order_id','desc')->get();
+        // Lấy chi tiết đơn hàng cho tất cả các order_id trong $all_order
+        $order_ids = $all_order->pluck('order_id'); // Lấy tất cả order_id vào một collection
+        $order_details = OrderDetails::with('product')
+            ->whereIn('order_id', $order_ids)
+            ->get();
+
+        // Nhóm các chi tiết theo order_id
+        $grouped_details = $order_details->groupBy('order_id');
+        return view("pages.checkout.history_order")->with('category', $category_product)
+                                                ->with('brand', $brand_product)
+                                                ->with("all_order", $all_order)
+                                                ->with("grouped_details", $grouped_details);
+    }
+    public function delete_order_customer($order_id) 
+    {
+        $delete = Order::find( $order_id );
+        if($delete->order_status == "Đã xác nhận")
+        {
+            return Redirect::back()->with("error","Đơn hàng đang được vận chuyển, không thể xóa!");
+        }
+        OrderDetails::where('order_id', $order_id)->delete();
+        Location::where('shipping_id', $delete->shipping_id)->delete();
+        Order::destroy($order_id);
+        Shipping::destroy($delete->shipping_id);
+        Payment::destroy($delete->payment_id);
+        return Redirect::back()->with("success","Xoá đơn hàng thành công");
+    }
+    // 
+    public function verify_order($order_id)
+    {
+        $order = Order::find($order_id);
+        
+        if (!$order) {
+            return response()->json(['success' => false, 'message' => 'Đơn hàng không tồn tại.']);
+        }
+
+        if($order->order_status == "Đang chờ xác nhận")
+        {
+            Order::where("order_id", $order_id)->update(["order_status"=> "Đã xác nhận"]);
+        }
+        else if($order->order_status == "Đã xác nhận")
+        {
+            Order::where("order_id", $order_id)->update(["order_status"=> "Đã giao hàng"]);
+        }
+        else
+        {
+            Order::where("order_id", $order_id)->update(["order_status"=> "Đang chờ xác nhận"]);
+        }
+        $order->refresh(); // Tải lại thông tin từ cơ sở dữ liệu
+        return response()->json(['success' => true, 'new_status' => $order->order_status]);
     }
 }

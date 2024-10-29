@@ -3,7 +3,7 @@
     <div class="table-agile-info">
         <div class="panel panel-default">
             <div class="panel-heading">
-                Danh sách sản phẩm
+                Danh sách đơn hàng
             </div>
             <?php
             $message = Session::get('message');
@@ -26,10 +26,8 @@
                 </div>
                 <div class="col-sm-3">
                     <div class="input-group">
-                        <input type="text" class="input-sm form-control" placeholder="Search">
-                        <span class="input-group-btn">
-                            <button class="btn btn-sm btn-default" type="button">Go!</button>
-                        </span>
+                        <input id="search" type="text" class="input-sm form-control" placeholder="Search">
+
                     </div>
                 </div>
             </div>
@@ -45,18 +43,22 @@
                             <th>Tên khách hàng</th>
                             <th>Tổng tiền</th>
                             <th>Trạng thái</th>
-                            <th></th>
-                            <th style="width:30px;"></th>
+
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($all_order as $item)
-                            <tr>
+                            <tr class="item">
                                 <td><label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label>
                                 </td>
                                 <td>{{ $item->customer->customer_name }}</td>
                                 <td>{{ $item->order_total }}</td>
-                                <td>{{ $item->order_status }}</td>
+                                <td id="order_status">
+                                    <span class="order-text">{{ $item->order_status }}</span>
+                                    <a href="#" class="verify-order" data-order-id="{{ $item->order_id }}">
+                                        <i class="fa fa-check-circle" style="color: green;"></i>
+                                    </a>
+                                </td>
                                 <td>
                                     <a href="{{ URL::to('/edit_order/' . $item->order_id) }}" class="active styling-edit"
                                         ui-toggle-class="">
@@ -67,33 +69,54 @@
                                         ui-toggle-class="">
                                         <i class="fa fa-times text-danger text"></i>
                                     </a>
+
+                                    <a href="{{ URL::to('/save_pdf/' . $item->order_id) }}" class="active styling-edit"
+                                        ui-toggle-class="">
+                                        <i class="fa fa-file-pdf-o text-danger text-active"></i>
+                                    </a>
+
+
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
-            <footer class="panel-footer">
-                <div class="row">
 
-                    <div class="col-sm-5 text-center">
-                        <small class="text-muted inline m-t-sm m-b-sm">showing 20-30 of 50 items</small>
-                    </div>
-                    <div class="col-sm-7 text-right text-center-xs">
-                        <ul class="pagination pagination-sm m-t-none m-b-none">
-                            <li><a href=""><i class="fa fa-chevron-left"></i></a></li>
-                            <li><a href="">1</a></li>
-                            <li><a href="">2</a></li>
-                            <li><a href="">3</a></li>
-                            <li><a href="">4</a></li>
-                            <li><a href=""><i class="fa fa-chevron-right"></i></a></li>
-                        </ul>
-                    </div>
-                </div>
-            </footer>
         </div>
     </div>
 @endsection
 
-{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> --}}
-{{-- <script src="{{ asset('backend/js/changeStatusProduct.js') }}"></script> --}}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).on('click', '.verify-order', function(e) {
+        e.preventDefault(); // Ngăn chặn hành động mặc định của thẻ a
+
+        var orderId = $(this).data('order-id');
+
+        $.ajax({
+            url: '/verify_order/' + orderId,
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}' // Đảm bảo thêm token CSRF
+            },
+            success: function(response) {
+                if (response.success) {
+
+                    // Cập nhật giao diện nếu cần
+                    $('#order_status .order-text').text(response.new_status);
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+                alert('Có lỗi xảy ra. Vui lòng thử lại.');
+            }
+        });
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ asset('backend/js/search.js') }}"></script>

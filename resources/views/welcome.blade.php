@@ -52,9 +52,6 @@
         echo Session::get('shipping_id');
 
     @endphp
-    <div class="fb-share-button" data-href="http://127.0.0.1:8000" data-layout="" data-size=""><a target="_blank"
-            href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2F127.0.0.1%3A8000%2F&amp;src=sdkpreparse"
-            class="fb-xfbml-parse-ignore">Chia sẻ</a></div>
     <header id="header"><!--header-->
         <div class="header_top"><!--header_top-->
             <div class="container">
@@ -131,10 +128,14 @@
                                             nhập</a>
                                     </li>
                                 @else
+                                    <li><a href="{{ URL::to('/history_order') }}"><i
+                                                class=" fa fa-shopping-cart"></i>Đơn hàng</a>
+                                    </li>
                                     <li><a href="{{ URL::to('/logout_checkout') }}"><i class="fa fa-lock"></i>Đăng
                                             xuất</a>
                                     </li>
                                 @endif
+
                             </ul>
                         </div>
                     </div>
