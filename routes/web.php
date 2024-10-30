@@ -248,7 +248,7 @@ Route::middleware(AdminMiddleware::class)->group(function () {
 });
 //coupon
 Route::post('/check_coupon', [
-    CartController::class, 
+    CouponController::class, 
     'check_coupon'
 ]);
 //password

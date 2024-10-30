@@ -172,28 +172,7 @@ class CartController extends Controller
             'newvalueafter'=> $newvalueafter,
         ]);
     }
-    public function check_coupon(Request $request)
-    {
-        $input_coupon_code = $request->input('input_coupon');
-        if(!$input_coupon_code)
-        {
-            Session::put('coupon_apply', "Chưa nhập mã giảm giá");
-        }
-        else 
-        {
-            $coupon = Coupon::where('coupon_code', $input_coupon_code)->first();
-            if($coupon)
-            {
-                Session::put('coupon', $coupon);
-                Session::put('coupon_apply', "Áp dụng mã giảm giá " . $coupon->coupon_code . " thành công");
-            }
-            else
-            {
-                Session::put('coupon_apply', "Mã giảm giá sai hoặc đã hết hạn");
-            }
-        }
-        return Redirect::back();
-    }
+    
     // public function check_coupon(Request $request)
     // {
     //     $input_coupon_code = $request->input('input_coupon');
