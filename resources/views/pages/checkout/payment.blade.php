@@ -82,7 +82,7 @@
                 <input name="distance" readonly type="text" id="distance">
                 <br>
                 <span>
-                    <label><input name="payment_option" value="1" type="radio"> Direct Bank Transfer</label>
+                    <label><input name="payment_option" value="1" type="radio">Thanh toán Momo</label>
                 </span>
                 <span>
                     <label><input name="payment_option" value="2" type="radio">Thanh toán khi nhận hàng</label>
@@ -107,37 +107,6 @@
         var marker;
         var routeControl;
 
-        // map.on('click', function(e) {
-        //     var lat = e.latlng.lat;
-        //     var lng = e.latlng.lng;
-
-        //     if (marker) {
-        //         map.removeLayer(marker);
-        //     }
-
-        //     marker = L.marker([lat, lng]).addTo(map);
-        //     document.getElementById('latitude').value = lat.toFixed(6);
-        //     document.getElementById('longitude').value = lng.toFixed(6);
-
-        //     // Tính khoảng cách
-        //     var distance1 = map.distance(startLocation, [lat, lng]);
-        //     // var distance2 = e.routes[0].summary.totalDistance; // Khoảng cách đường bộ trong mét
-
-        //     document.getElementById('distance').value = (distance1 / 1000).toFixed(2);
-
-        //     if (routeControl) {
-        //         map.removeControl(routeControl);
-        //     }
-
-        //     // Tạo đường đi từ điểm gốc đến vị trí người dùng chọn
-        //     routeControl = L.Routing.control({
-        //         waypoints: [
-        //             L.latLng(startLocation[0], startLocation[1]),
-        //             L.latLng(lat, lng)
-        //         ],
-        //         routeWhileDragging: true
-        //     }).addTo(map);
-        // });
         map.on('click', function(e) {
             var lat = e.latlng.lat;
             var lng = e.latlng.lng;

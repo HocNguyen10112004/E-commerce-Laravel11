@@ -203,7 +203,7 @@ CREATE TABLE `tbl_order` (
   `payment_id` bigint(20) UNSIGNED NOT NULL,
   `order_total` double NOT NULL,
   `order_feeshipping` bigint(20) UNSIGNED NOT NULL,
-  `order_status` int(11) NOT NULL,
+  `order_status` varchar(50) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

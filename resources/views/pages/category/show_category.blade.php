@@ -12,7 +12,7 @@
                                 <div class="productinfo text-center">
                                     <img src="{{ URL::to('uploads/product/' . $item->product_image) }}" height="300px"
                                         width="100px" alt="" />
-                                    <form action="{{ URL::to('/save_cart') }}", method="POST">
+                                    <form class="add-to-cart-form" action="{{ URL::to('/save_cart') }}", method="POST">
                                         @csrf
                                         <span>
                                             <h2>{{ number_format((int) $item->product_price) . ' ' . 'VNĐ' }}</h2>
@@ -42,3 +42,25 @@
         </div><!--features_items-->
     </div>
 @endsection
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.add-to-cart-form').on('submit', function(event) {
+            event.preventDefault(); // Ngăn chặn hành động mặc định của form
+
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: $(this).serialize(), // Gửi tất cả dữ liệu trong form
+                success: function(response) {
+                    // Hiển thị thông báo thành công bằng SweetAlert
+                    swal("Thành công!", "Thêm thương hiệu thành công!", "success");
+                },
+                error: function(xhr) {
+                    // Hiển thị thông báo lỗi
+                    swal("Lỗi!", "Có lỗi xảy ra, vui lòng thử lại.", "error");
+                }
+            });
+        });
+    });
+</script>

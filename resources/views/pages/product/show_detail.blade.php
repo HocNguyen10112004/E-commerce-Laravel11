@@ -45,7 +45,8 @@
                 <h2>{{ $product->product_name }}</h2>
                 <p>Mã sản phẩm {{ $product->product_id }}</p>
                 <img src="images/product-details/rating.png" alt="" />
-                <form action="{{ URL::to('/save_cart') }}", method="POST">
+
+                <form id="add-to-cart-form" action="{{ URL::to('/save_cart') }}" method="POST">
                     @csrf
                     <span>
                         <span>{{ number_format((int) $product->product_price) . ' ' . 'VNĐ' }}</span>
@@ -58,6 +59,8 @@
                         </button>
                     </span>
                 </form>
+                <div id="alert" class="alert" style="display: none;"></div>
+
                 <p><b>Tình trạng:</b>Còn Hàng</p>
                 <p><b>Điều kiện:</b>100%</p>
                 <p><b>Thương hiệu:</b>{{ $product->brand->brand_name }}</p>
@@ -201,3 +204,27 @@
         </div>
     </div><!--/recommended_items-->
 @endsection
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#add-to-cart-form').on('submit', function(event) {
+            event.preventDefault(); // Ngăn chặn hành động mặc định của form
+
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: $(this).serialize(), // Gửi tất cả dữ liệu trong form
+                success: function(response) {
+                    // Hiển thị thông báo thành công
+                    $('#alert').text('Sản phẩm đã được thêm vào giỏ hàng!').css(
+                        'background-color', '#4CAF50').fadeIn().delay(3000).fadeOut();
+                },
+                error: function(xhr) {
+                    // Xử lý lỗi
+                    $('#alert').text('Có lỗi xảy ra, vui lòng thử lại.').css(
+                        'background-color', '#f44336').fadeIn().delay(3000).fadeOut();
+                }
+            });
+        });
+    });
+</script>

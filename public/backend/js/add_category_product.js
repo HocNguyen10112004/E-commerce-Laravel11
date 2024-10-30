@@ -17,13 +17,13 @@ $(document).ready(function() {
             type: "POST",
             data: formData,
             success: function(response) {
-                alert("Thêm danh mục thành công!");
-                $('#category-form')[0].reset(); // Reset lại form sau khi thêm thành công
-            },
-            error: function(xhr) {
-                alert("Có lỗi xảy ra. Vui lòng thử lại.");
-                console.log(xhr.responseText); // Kiểm tra lỗi phía server
-            }
+                    Swal.fire("Thêm danh mục thành công!", "", "success");
+                    $('#category-form')[0].reset(); // Reset lại form sau khi thêm thành công
+                },
+                error: function(xhr) {
+                    Swal.fire("Có lỗi xảy ra.", "Vui lòng thử lại.", "error");
+                    console.log(xhr.responseText); // Kiểm tra lỗi phía server
+                }
         });
     });
 });

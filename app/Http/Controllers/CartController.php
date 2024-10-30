@@ -11,24 +11,49 @@ use App\Models\Coupon;
 use Darryldecode\Cart\Facades\CartFacade as Cart; // Sử dụng Facade
 class CartController extends Controller
 {
+    // public function save_cart(Request $request)
+    // {
+    //     $productID = $request->input("product_id_hidden");
+    //     $quantity = $request->input("qty");
+    //     $product_infor = Product::find($productID);
+    //     Cart::add([
+    //     'id' => $productID, // ID sản phẩm
+    //     'name' => $product_infor->product_name, // Tên sản phẩm
+    //     'quantity' => $quantity, // Số lượng
+    //     'price' => $product_infor->product_price, // Giá sản phẩm
+    //     'attributes' => [
+    //         'image' =>  $product_infor->product_image
+    //     ]
+    //     ]);
+    //     Session::put("cart", Cart::getContent());
+    //     return Redirect::to('/show_cart');
+    // }
     public function save_cart(Request $request)
     {
         $productID = $request->input("product_id_hidden");
         $quantity = $request->input("qty");
         $product_infor = Product::find($productID);
-        $sessionId = session()->getId(); // lấy session ID của người dùng hiện tại
+
+        // Kiểm tra sản phẩm
+        if (!$product_infor) {
+            return response()->json(['error' => 'Sản phẩm không tồn tại.'], 400);
+        }
+
         Cart::add([
-        'id' => $productID, // ID sản phẩm
-        'name' => $product_infor->product_name, // Tên sản phẩm
-        'quantity' => $quantity, // Số lượng
-        'price' => $product_infor->product_price, // Giá sản phẩm
-        'attributes' => [
-            'image' =>  $product_infor->product_image
-        ]
+            'id' => $productID,
+            'name' => $product_infor->product_name,
+            'quantity' => $quantity,
+            'price' => $product_infor->product_price,
+            'attributes' => [
+                'image' =>  $product_infor->product_image
+            ]
         ]);
+
         Session::put("cart", Cart::getContent());
-        return Redirect::to('/show_cart');
+
+        return response()->json(['success' => 'Sản phẩm đã được thêm vào giỏ hàng!']);
     }
+
 
     public function show_cart()
     {

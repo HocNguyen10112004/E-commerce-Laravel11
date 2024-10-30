@@ -20,6 +20,9 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Mail\OrderConfirmationEmail;
 use Illuminate\Support\Facades\Mail;
 use Str;
+use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 class CheckoutController extends Controller
 {
     public function login_checkout(Request $request)

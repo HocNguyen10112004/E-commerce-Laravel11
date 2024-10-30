@@ -17,11 +17,11 @@ $(document).ready(function() {
             type: "POST",
             data: formData,
             success: function(response) {
-                alert("Thêm thương hiệu thành công!");
+                swal("Thêm thương hiệu thành công!");
                 $('#brand-form')[0].reset(); // Reset lại form sau khi thêm thành công
             },
             error: function(xhr) {
-                alert("Có lỗi xảy ra. Vui lòng thử lại.");
+                swal("Có lỗi xảy ra. Vui lòng thử lại.");
                 console.log(xhr.responseText); // Kiểm tra lỗi phía server
             }
         });

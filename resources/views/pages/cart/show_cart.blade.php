@@ -162,7 +162,8 @@
                         // Cập nhật lại nội dung của phần tử
                         $('#ajax').text(response.newvalue.toLocaleString() + ' VNĐ');
                         $('#final').text((response.newvalueafter).toLocaleString() + ' VNĐ');
-                        alert(response.message); // Hiển thị thông báo thành công
+                        swal("Thành công!", "Xóa sản phẩm thành công!",
+                            "success"); // Hiển thị thông báo thành công
                     } else {
                         alert('Có lỗi xảy ra: ' + response.message);
                     }

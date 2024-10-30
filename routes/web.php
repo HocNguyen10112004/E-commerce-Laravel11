@@ -12,6 +12,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\PaymentController;
 //Front
 Route::get('/', [
     HomeController::class,
@@ -268,4 +269,6 @@ Route::get('/delete_order_customer/{order_id}', [
     CheckoutController::class,   
     'delete_order_customer'
 ] ); 
+
+//
 
