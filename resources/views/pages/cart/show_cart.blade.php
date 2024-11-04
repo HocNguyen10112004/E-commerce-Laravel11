@@ -144,39 +144,40 @@
 @endsection
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    $(document).on('click', '.cart_quantity_delete', function(e) {
-        e.preventDefault(); // Ngăn chặn hành động mặc định của liên kết
+    $(document).ready(function() {
+        $(document).on('click', '.cart_quantity_delete', function(e) {
+            e.preventDefault(); // Ngăn chặn hành động mặc định của liên kết
 
-        var deleteUrl = $(this).attr('href'); // Lấy URL từ thuộc tính href
-        var row = $(this).closest('tr'); // Lấy hàng của sản phẩm cần xóa
+            var deleteUrl = $(this).attr('href'); // Lấy URL từ thuộc tính href
+            var row = $(this).closest('tr'); // Lấy hàng của sản phẩm cần xóa
 
-        // Hiển thị hộp thoại xác nhận
-        if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
-            $.ajax({
-                url: deleteUrl,
-                type: 'GET',
-                success: function(response) {
-                    if (response.success) {
-                        // Xóa hàng trực tiếp từ DOM
-                        row.remove(); // Xóa hàng khỏi bảng
-                        // Cập nhật lại nội dung của phần tử
-                        $('#ajax').text(response.newvalue.toLocaleString() + ' VNĐ');
-                        $('#final').text((response.newvalueafter).toLocaleString() + ' VNĐ');
-                        swal("Thành công!", "Xóa sản phẩm thành công!",
-                            "success"); // Hiển thị thông báo thành công
-                    } else {
-                        alert('Có lỗi xảy ra: ' + response.message);
+            // Hiển thị hộp thoại xác nhận
+            if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+                $.ajax({
+                    url: deleteUrl,
+                    type: 'GET',
+                    success: function(response) {
+                        if (response.success) {
+                            // Xóa hàng trực tiếp từ DOM
+                            row.remove(); // Xóa hàng khỏi bảng
+                            // Cập nhật lại nội dung của phần tử
+                            $('#ajax').text(response.newvalue.toLocaleString() + ' VNĐ');
+                            $('#final').text((response.newvalueafter).toLocaleString() +
+                                ' VNĐ');
+                            swal("Thành công!", "Xóa sản phẩm thành công!",
+                                "success"); // Hiển thị thông báo thành công
+                        } else {
+                            alert('Có lỗi xảy ra: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Có lỗi xảy ra: ' + xhr.responseText);
                     }
-                },
-                error: function(xhr, status, error) {
-                    alert('Có lỗi xảy ra: ' + xhr.responseText);
-                }
-            });
-        }
+                });
+            }
+        });
     });
 </script>
-
-
 
 <script>
     $(document).ready(function() {
@@ -265,26 +266,3 @@
         });
     });
 </script>
-
-{{-- <script>
-    $(document).ready(function() {
-        $('#couponForm').on('submit', function(e) {
-            e.preventDefault(); // Ngăn không cho form gửi dữ liệu theo cách thông thường
-            var formData = {
-                input_coupon: $('#input_coupon').val()
-                token: $('input[name="_token"]').val() // CSRF token
-            };
-            $.ajax({
-                url: '/check_coupon',
-                method: "POST",
-                data: formData,
-                success: function(response) {
-                    $('#couponMessage').text(response.message).css('color', 'green');
-                },
-                error: function(xhr) {
-                    $('#couponMessage').text(xhr.responseJSON.message).css('color', 'red');
-                }
-            });
-        });
-    });
-</script> --}}

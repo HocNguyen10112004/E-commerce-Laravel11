@@ -255,13 +255,13 @@ class CheckoutController extends Controller
         $customer_email = $request->input('email');
         $customer = Customer::where('customer_email', $customer_email)->first();
         if (!$customer) {
-            Session::put('wrong_email','Email không tồn tại!');
-            return Redirect::back();
+           
+            return response()->json(['success'=>false]);
         }
         $randomPassword = Str::random(10);
         Customer::where('customer_email', $customer_email)->update(['customer_password'=> $randomPassword]);
         Mail::to($customer_email)->send(new PasswordEmail($randomPassword));
-        return Redirect::to('login_checkout');
+        return response()->json(['success' => true]);
     }
     public function history_order()
     {
@@ -294,7 +294,7 @@ class CheckoutController extends Controller
         Order::destroy($order_id);
         Shipping::destroy($delete->shipping_id);
         Payment::destroy($delete->payment_id);
-        return Redirect::back()->with("success","Xoá đơn hàng thành công");
+        return response()->json(['success' => true]);
     }
     // 
     public function verify_order($order_id)

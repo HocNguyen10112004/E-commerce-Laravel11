@@ -58,3 +58,36 @@
         </div>
     </section> <!--/#cart_items-->
 @endsection
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $(document).on('click', '.cart_quantity_delete', function(e) {
+            e.preventDefault(); // Ngăn chặn hành động mặc định của liên kết
+
+            var deleteUrl = $(this).attr('href'); // Lấy URL từ thuộc tính href
+            var row = $(this).closest('tr'); // Lấy hàng của sản phẩm cần xóa
+
+            // Hiển thị hộp thoại xác nhận
+            if (confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')) {
+                $.ajax({
+                    url: deleteUrl,
+                    type: 'GET',
+                    success: function(response) {
+                        if (response.success) {
+                            // Xóa hàng trực tiếp từ DOM
+                            row.remove(); // Xóa hàng khỏi bảng
+                            swal("Thành công!", "Xóa sản phẩm thành công!",
+                                "success"); // Hiển thị thông báo thành công
+                        } else {
+                            swal("Thất bại", "Xóa sản phẩm thất bại!",
+                                "error"); // Hiển thị thông báo thành công
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Có lỗi xảy ra: ' + xhr.responseText);
+                    }
+                });
+            }
+        });
+    });
+</script>
