@@ -296,7 +296,6 @@ class CheckoutController extends Controller
         Payment::destroy($delete->payment_id);
         return response()->json(['success' => true]);
     }
-    // 
     public function verify_order($order_id)
     {
         $order = Order::find($order_id);

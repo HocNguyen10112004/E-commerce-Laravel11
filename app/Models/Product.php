@@ -26,6 +26,11 @@ class Product extends Model
         
         return $this->hasMany(OrderDetails::class, 'product_id', 'product_id');
     }
+    public function review()
+    {
+        
+        return $this->hasMany(Reviews::class, 'product_id', 'product_id');
+    }
     // Các trường được phép thêm/sửa
     protected $fillable = ['product_name', 'product_price', 'product_image', 'category_id', 'brand_id', 'product_content', 'product_desc', 'product_status'];
 }

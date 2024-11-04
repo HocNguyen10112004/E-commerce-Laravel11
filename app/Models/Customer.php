@@ -15,5 +15,10 @@ class Customer extends Model
     {
         return $this->hasMany(Order::class, 'customer_id', 'customer_id');
     }
+    public function review()
+    {
+        
+        return $this->hasMany(Reviews::class, 'customer_id', 'customer_id');
+    }
     protected $fillable = ['customer_email', 'customer_name', 'customer_phone', 'customer_password'];
 }

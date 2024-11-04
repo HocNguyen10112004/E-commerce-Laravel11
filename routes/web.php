@@ -270,5 +270,9 @@ Route::get('/delete_order_customer/{order_id}', [
     'delete_order_customer'
 ] ); 
 
-//
+//reviews_product
+Route::post('/add_review/{product_id}', [
+    ProductController::class,   
+    'add_review'
+]);
 

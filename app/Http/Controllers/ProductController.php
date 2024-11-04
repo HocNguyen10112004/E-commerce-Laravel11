@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\Product; // Thêm model ở đây
 use App\Models\CategoryProduct;
 use App\Models\BrandProduct;
+use App\Models\Reviews;
+use App\Models\Customer;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 class ProductController extends Controller
 {
@@ -112,10 +114,12 @@ class ProductController extends Controller
         $brand_product = BrandProduct::where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
         $product = Product::with(['brand','category'])->where('product_id', $product_id)->where('product_status', '1')->first();
         $related_products=Product::with(['brand','category'])->where('brand_id',$product->brand_id)->where('category_id',$product->category_id)->where('product_status', '1')->whereNotIn('product_id', [$product->product_id])->orderBy('product_id', 'desc')->get();
+        $reviews_product=Reviews::with(['customer'])->where('product_id', $product_id)->orderBy('review_id', 'desc')->get();
         return view("pages.product.show_detail")  ->with('category', $category_product)
                                                         ->with('brand', $brand_product)
                                                         ->with('product', $product)
-                                                        ->with('related_products', $related_products);
+                                                        ->with('related_products', $related_products)
+                                                        ->with('reviews_product', $reviews_product);
     }
     public function import(Request $request)
     {
@@ -157,5 +161,18 @@ class ProductController extends Controller
 
         return redirect()->back()->with('success', 'Products imported successfully!');
     }
-
+    public function add_review(Request $request, $product_id)
+    {
+        $customer_id = Session::get('customer_id');
+        if(!$customer_id)
+        {
+            return Redirect::to('/login_checkout');
+        }
+        Reviews::create([
+            'customer_id' => $customer_id,
+            'review_content' => $request->input('review_content'),
+            'product_id' => $product_id,
+            ]);
+        return Redirect::back();
+    }
 }
