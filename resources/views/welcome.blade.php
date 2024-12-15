@@ -61,7 +61,7 @@
                     <div class="col-sm-6">
                         <div class="contactinfo">
                             <ul class="nav nav-pills">
-                                <li><a href="#"><i class="fa fa-phone"></i> +2 95 01 88 821</a></li>
+                                <li><a href="#"><i class="fa fa-phone"></i> 088 9367 456</a></li>
                                 <li><a href="#"><i class="fa fa-envelope"></i> info@domain.com</a></li>
                             </ul>
                         </div>
@@ -88,31 +88,7 @@
                         <div class="logo pull-left">
                             <a href="index.html"><img src="frontend/images/logo.png" alt="" /></a>
                         </div>
-                        <div class="btn-group pull-right">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default dropdown-toggle usa"
-                                    data-toggle="dropdown">
-                                    USA
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Canada</a></li>
-                                    <li><a href="#">UK</a></li>
-                                </ul>
-                            </div>
-
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default dropdown-toggle usa"
-                                    data-toggle="dropdown">
-                                    DOLLAR
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Canadian Dollar</a></li>
-                                    <li><a href="#">Pound</a></li>
-                                </ul>
-                            </div>
-                        </div>
+                        
                     </div>
                     <div class="col-sm-8">
                         <div class="shop-menu pull-right">
@@ -201,9 +177,8 @@
                             <div class="item active">
                                 <div class="col-sm-6">
                                     <h1><span>E</span>-SHOPPER</h1>
-                                    <h2>Free E-Commerce Template</h2>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-                                        incididunt ut labore et dolore magna aliqua. </p>
+                                    
+                                    
                                     <button type="button" class="btn btn-default get">Get it now</button>
                                 </div>
                                 <div class="col-sm-6">
@@ -282,7 +257,7 @@
                                     @foreach ($brand as $item)
                                         <li>
                                             <a href="{{ URL::to('/thuong_hieu_san_pham/' . $item->brand_id) }}">
-                                                <span class="pull-right">(50)</span>{{ $item->brand_name }}
+                                                <span class="pull-right"></span>{{ $item->brand_name }}
                                             </a>
                                         </li>
                                     @endforeach

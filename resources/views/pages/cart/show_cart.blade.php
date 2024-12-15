@@ -19,11 +19,11 @@
                 <table class="table table-condensed">
                     <thead>
                         <tr class="cart_menu">
-                            <td class="image">Image</td>
-                            <td class="description">Product</td>
-                            <td class="price">Price</td>
-                            <td class="quantity">Quantity</td>
-                            <td class="total">Total</td>
+                            <td class="image">Hình ảnh</td>
+                            <td class="description">Sản phẩm</td>
+                            <td class="price">Giá</td>
+                            <td class="quantity">Số lượng</td>
+                            <td class="total">Tổng tiền</td>
                             <td></td>
                         </tr>
                     </thead>
@@ -72,8 +72,7 @@
         <div class="">
             <div class="heading">
                 <h3>What would you like to do next?</h3>
-                <p>Choose if you have a discount code or reward points you want to use or would like to estimate your
-                    delivery cost.</p>
+                
             </div>
             <div class="row">
                 <div class="col-sm-6">

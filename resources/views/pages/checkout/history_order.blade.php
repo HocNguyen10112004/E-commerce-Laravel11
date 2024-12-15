@@ -76,10 +76,10 @@
                         if (response.success) {
                             // Xóa hàng trực tiếp từ DOM
                             row.remove(); // Xóa hàng khỏi bảng
-                            swal("Thành công!", "Xóa sản phẩm thành công!",
+                            swal("Thành công!", "Xóa đơn hàng thành công!",
                                 "success"); // Hiển thị thông báo thành công
                         } else {
-                            swal("Thất bại", "Xóa sản phẩm thất bại!",
+                            swal("Thất bại", "Xóa đơn hàng thất bại!",
                                 "error"); // Hiển thị thông báo thành công
                         }
                     },
