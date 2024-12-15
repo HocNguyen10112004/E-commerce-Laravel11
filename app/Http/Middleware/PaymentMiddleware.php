@@ -22,7 +22,7 @@ class PaymentMiddleware
         if (!Session::has('cart')) {
             return Redirect::to('/show_cart');
         }
-        if (!Session::has("shipping_id")) {
+        if (!Session::has("shipping")) {
             return Redirect::to('/checkout');
         }
 

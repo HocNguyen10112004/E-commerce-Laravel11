@@ -9,7 +9,7 @@
                         <h2>Login to your account</h2>
                         <form id="reset_password" method="POST">
                             @csrf
-                            <input id="email" type="email" name="email" placeholder="Email Address" />
+                            <input id="email" type="email" name="email" placeholder="Email Address" required/>
 
                             <button type="submit" class="btn btn-default">Reset password</button>
                         </form>

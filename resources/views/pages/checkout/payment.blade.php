@@ -85,7 +85,7 @@
                     <label><input name="payment_option" value="1" type="radio">Thanh toán Momo</label>
                 </span>
                 <span>
-                    <label><input name="payment_option" value="2" type="radio">Thanh toán khi nhận hàng</label>
+                    <label><input name="payment_option" value="2" type="radio" required>Thanh toán khi nhận hàng</label>
                 </span>
                 <br>
 

@@ -22,8 +22,8 @@
                         <h2>Login to your account</h2>
                         <form action="{{ URL::to('/login_customer') }}" method="POST">
                             @csrf
-                            <input type="email" name="email" placeholder="Email Address" />
-                            <input type="password" name="password" placeholder="Password" />
+                            <input type="email" name="email" placeholder="Email Address" required />
+                            <input type="password" name="password" placeholder="Password" required />
                             <span>
                                 <input type="checkbox" class="checkbox">
                                 Keep me signed in

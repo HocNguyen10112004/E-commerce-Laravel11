@@ -117,7 +117,7 @@
                     <div class="col-sm-8">
                         <div class="shop-menu pull-right">
                             <ul class="nav navbar-nav">
-                                <li><a href="{{ URL::to('/login_checkout') }}"><i class="fa fa-user"></i>Tài khoản</a>
+                                <li><a href="{{ URL::to('/change_password') }}"><i class="fa fa-user"></i>Đổi mật khẩu</a>
                                 </li>
                                 <li><a href="#"><i class="fa fa-star"></i>Yêu thích</a></li>
                                 <li><a href="{{ URL::to('/payment') }}"><i class="fa fa-crosshairs"></i>Thanh

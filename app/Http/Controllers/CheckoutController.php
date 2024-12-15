@@ -30,14 +30,14 @@ class CheckoutController extends Controller
         $category_product = CategoryProduct::where('category_status', '1')->orderBy('category_id', 'desc')->get();
         $brand_product = BrandProduct::where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
         return view("pages.checkout.login_checkout")->with('category', $category_product)
-                                                ->with('brand', $brand_product);
+            ->with('brand', $brand_product);
     }
     public function add_customer(Request $request)
     {
         $existingCustomer = Customer::where('customer_email', $request['customer_email'])->first();
         $existingCustomer1 = Customer::where('customer_phone', $request['customer_phone'])->first();
         if ($existingCustomer or $existingCustomer1) {
-            Session::put('error','Email hoặc số điện thoại đã tồn tại!');
+            Session::put('error', 'Email hoặc số điện thoại đã tồn tại!');
             return Redirect::back();
         }
         // Tạo mật khẩu ngẫu nhiên
@@ -56,20 +56,18 @@ class CheckoutController extends Controller
         $category_product = CategoryProduct::where('category_status', '1')->orderBy('category_id', 'desc')->get();
         $brand_product = BrandProduct::where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
         return view('pages.checkout.checkout')->with('category', $category_product)
-                                                ->with('brand', $brand_product);;
+            ->with('brand', $brand_product);
+        ;
     }
     public function save_checkout_customer(Request $request)
     {
-        $inserted = Shipping::create([
-            'customer_id' => Session::get('customer_id'),
+        Session::put('shipping', [
             'shipping_name' => $request['shipping_name'],
             'shipping_phone' => $request['shipping_phone'],
             'shipping_email' => $request['shipping_email'],
             'shipping_address' => $request['shipping_address'],
             'shipping_notes' => $request['shipping_notes']
         ]);
-        $shipping_id = $inserted->shipping_id;
-        Session::put('shipping_id', $shipping_id);
         return Redirect::to('/payment');
     }
     public function payment()
@@ -79,8 +77,8 @@ class CheckoutController extends Controller
         $cartItems = Cart::getContent();
 
         return view('pages.checkout.payment')->with('category', $category_product)
-                                                ->with('brand', $brand_product)
-                                                ->with('cartItems', $cartItems);
+            ->with('brand', $brand_product)
+            ->with('cartItems', $cartItems);
     }
     public function logout_checkout()
     {
@@ -90,25 +88,32 @@ class CheckoutController extends Controller
     }
     public function login_customer(Request $request)
     {
-        $email= $request->input('email');
-        $password= $request->input('password');
+        $email = $request->input('email');
+        $password = $request->input('password');
         $user = Customer::where('customer_email', $email)->where('customer_password', $password)->first();
-        if ($user) 
-        {
+        if ($user) {
             Session::put('customer_id', $user->customer_id);
             return Redirect::to('/');
-        } 
-        else 
-        {
-            Session::put('wrongacc','Tài khoản hoặc mật khẩu sai!');
+        } else {
+            Session::put('wrongacc', 'Tài khoản hoặc mật khẩu sai!');
             return Redirect::to('/login_checkout');
         }
     }
     public function order_place(Request $request)
     {
+        $shipping = Session::get('shipping');
+        $inserted_shipping = Shipping::create([
+            'customer_id' => Session::get('customer_id'),
+            'shipping_name' => $shipping['shipping_name'],
+            'shipping_phone' => $shipping['shipping_phone'],
+            'shipping_email' => $shipping['shipping_email'],
+            'shipping_address' => $shipping['shipping_address'],
+            'shipping_notes' => $shipping['shipping_notes']
+        ]);
+        $shipping_id = $inserted_shipping->shipping_id;
+        Session::put('shipping_id', $shipping_id);
         $coupon = Session::get('coupon');
-        if(!$coupon)
-        {
+        if (!$coupon) {
             $latitude = $request->input('latitude');
             $shipping_id = Session::get('shipping_id');
             $longitude = $request->input('longitude');
@@ -116,71 +121,64 @@ class CheckoutController extends Controller
             $inserted_payment = Payment::create([
                 'payment_method' => $request['payment_option'],
                 'payment_status' => "1",
-                
+
             ]);
             $inserted_order = Order::create([
                 'customer_id' => Session::get('customer_id'),
                 'shipping_id' => Session::get('shipping_id'),
                 'payment_id' => $inserted_payment->payment_id,
-                'order_feeshipping' => round($distance)*1000,
-                'order_total' => Cart::getTotal()*1.1,
+                'order_feeshipping' => round($distance) * 1000,
+                'order_total' => Cart::getTotal() * 1.1,
                 'order_status' => 'Đang chờ xác nhận'
             ]);
             $cartItems = Session::get('cart', collect());
-            foreach ($cartItems as $cartItem)
-            {
+            foreach ($cartItems as $cartItem) {
                 OrderDetails::create([
-                    "order_id"=> $inserted_order->order_id,
+                    "order_id" => $inserted_order->order_id,
                     "product_id" => $cartItem->id,
                     'product_sales_quantity' => $cartItem->quantity
                 ]);
             }
-            
+
             Location::create([
                 'shipping_id' => $shipping_id,
                 'latitude' => $latitude,
                 'longitude' => $longitude,
                 'distance' => $distance
             ]);
-        }
-        else
-        {
+        } else {
             $inserted_payment = Payment::create([
                 'payment_method' => $request['payment_option'],
                 'payment_status' => "1",
-                
+
             ]);
             $latitude = $request->input('latitude');
             $shipping_id = Session::get('shipping_id');
             $longitude = $request->input('longitude');
             $distance = $request->input('distance');
-            if($coupon->coupon_desc == 0)
-            {
-                $cartTotal = Cart::getTotal()*1.1 - $coupon->coupon_value;
-            }
-            else
-            {
-                $cartTotal = Cart::getTotal()*1.1*(100 - $coupon->coupon_value)/100;
+            if ($coupon->coupon_desc == 0) {
+                $cartTotal = Cart::getTotal() * 1.1 - $coupon->coupon_value;
+            } else {
+                $cartTotal = Cart::getTotal() * 1.1 * (100 - $coupon->coupon_value) / 100;
             }
             $inserted_order = Order::create([
                 'customer_id' => Session::get('customer_id'),
                 'shipping_id' => Session::get('shipping_id'),
                 'payment_id' => $inserted_payment->payment_id,
-                'order_feeshipping' => round($distance)*1000,
+                'order_feeshipping' => round($distance) * 1000,
                 'order_total' => $cartTotal,
                 'order_status' => 'Đang chờ xác nhận'
             ]);
             $cartItems = Session::get('cart', collect());
-            foreach ($cartItems as $cartItem)
-            {
+            foreach ($cartItems as $cartItem) {
                 OrderDetails::create([
-                    "order_id"=> $inserted_order->order_id,
+                    "order_id" => $inserted_order->order_id,
                     "product_id" => $cartItem->id,
                     'product_sales_quantity' => $cartItem->quantity
                 ]);
             }
             Coupon::where('coupon_id', $coupon->coupon_id)->decrement('coupon_number');
-            
+
             Location::create([
                 'shipping_id' => $shipping_id,
                 'latitude' => $latitude,
@@ -195,18 +193,19 @@ class CheckoutController extends Controller
         Session::forget('coupon');
         Session::forget('shipping_id');
         Session::forget('cart');
+        Session::forget('shipping');
         Cart::clear();
         Session::put('success1', 'Đặt hàng thành công! Cảm ơn bạn đã mua hàng.');
         return Redirect::to('/payment');
     }
     public function manage_order()
     {
-        $all_order = Order::with(['customer','shipping', 'payment'])->get();
+        $all_order = Order::with(['customer', 'shipping', 'payment'])->get();
         return view("admin.manage_order")->with("all_order", $all_order);
     }
-    public function delete_order($order_id) 
+    public function delete_order($order_id)
     {
-        $delete = Order::find( $order_id );
+        $delete = Order::find($order_id);
         OrderDetails::where('order_id', $order_id)->delete();
         Location::where('shipping_id', $delete->shipping_id)->delete();
         Order::destroy($order_id);
@@ -217,7 +216,7 @@ class CheckoutController extends Controller
     }
     public function view_order($order_id)
     {
-        $order = Order::with(["shipping","customer", "payment"])->find($order_id);
+        $order = Order::with(["shipping", "customer", "payment"])->find($order_id);
         $collection = OrderDetails::with("product")->where("order_id", $order_id)->get();
         return view("admin.view_order")->with("order", $order)->with("collection", $collection);
 
@@ -227,7 +226,7 @@ class CheckoutController extends Controller
         // Lấy thông tin đơn hàng cùng các thông tin liên quan
         $order = Order::with(["shipping", "customer", "payment"])->find($order_id);
         $collection = OrderDetails::with("product")->where("order_id", $order_id)->get();
-        
+
         // Kiểm tra nếu không tìm thấy đơn hàng
         if (!$order) {
             abort(404);
@@ -244,22 +243,22 @@ class CheckoutController extends Controller
     }
     public function reset_password()
     {
-        
+
         $category_product = CategoryProduct::where('category_status', '1')->orderBy('category_id', 'desc')->get();
         $brand_product = BrandProduct::where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
         return view('pages.checkout.reset_password')->with('category', $category_product)
-                                                ->with('brand', $brand_product);
+            ->with('brand', $brand_product);
     }
     public function resend_password(Request $request)
     {
         $customer_email = $request->input('email');
         $customer = Customer::where('customer_email', $customer_email)->first();
         if (!$customer) {
-           
-            return response()->json(['success'=>false]);
+
+            return response()->json(['success' => false]);
         }
         $randomPassword = Str::random(10);
-        Customer::where('customer_email', $customer_email)->update(['customer_password'=> $randomPassword]);
+        Customer::where('customer_email', $customer_email)->update(['customer_password' => $randomPassword]);
         Mail::to($customer_email)->send(new PasswordEmail($randomPassword));
         return response()->json(['success' => true]);
     }
@@ -268,7 +267,7 @@ class CheckoutController extends Controller
         $customer_id = Session::get('customer_id');
         $category_product = CategoryProduct::where('category_status', '1')->orderBy('category_id', 'desc')->get();
         $brand_product = BrandProduct::where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
-        $all_order = Order::with(['customer','shipping', 'payment'])->where('customer_id', $customer_id)->orderBy('order_id','desc')->get();
+        $all_order = Order::with(['customer', 'shipping', 'payment'])->where('customer_id', $customer_id)->orderBy('order_id', 'desc')->get();
         // Lấy chi tiết đơn hàng cho tất cả các order_id trong $all_order
         $order_ids = $all_order->pluck('order_id'); // Lấy tất cả order_id vào một collection
         $order_details = OrderDetails::with('product')
@@ -278,16 +277,15 @@ class CheckoutController extends Controller
         // Nhóm các chi tiết theo order_id
         $grouped_details = $order_details->groupBy('order_id');
         return view("pages.checkout.history_order")->with('category', $category_product)
-                                                ->with('brand', $brand_product)
-                                                ->with("all_order", $all_order)
-                                                ->with("grouped_details", $grouped_details);
+            ->with('brand', $brand_product)
+            ->with("all_order", $all_order)
+            ->with("grouped_details", $grouped_details);
     }
-    public function delete_order_customer($order_id) 
+    public function delete_order_customer($order_id)
     {
-        $delete = Order::find( $order_id );
-        if($delete->order_status == "Đã xác nhận")
-        {
-            return Redirect::back()->with("error","Đơn hàng đang được vận chuyển, không thể xóa!");
+        $delete = Order::find($order_id);
+        if ($delete->order_status == "Đã xác nhận") {
+            return Redirect::back()->with("error", "Đơn hàng đang được vận chuyển, không thể xóa!");
         }
         OrderDetails::where('order_id', $order_id)->delete();
         Location::where('shipping_id', $delete->shipping_id)->delete();
@@ -299,24 +297,55 @@ class CheckoutController extends Controller
     public function verify_order($order_id)
     {
         $order = Order::find($order_id);
-        
+
         if (!$order) {
             return response()->json(['success' => false, 'message' => 'Đơn hàng không tồn tại.']);
         }
 
-        if($order->order_status == "Đang chờ xác nhận")
-        {
-            Order::where("order_id", $order_id)->update(["order_status"=> "Đã xác nhận"]);
-        }
-        else if($order->order_status == "Đã xác nhận")
-        {
-            Order::where("order_id", $order_id)->update(["order_status"=> "Đã giao hàng"]);
-        }
-        else
-        {
-            Order::where("order_id", $order_id)->update(["order_status"=> "Đang chờ xác nhận"]);
+        if ($order->order_status == "Đang chờ xác nhận") {
+            Order::where("order_id", $order_id)->update(["order_status" => "Đã xác nhận"]);
+        } else if ($order->order_status == "Đã xác nhận") {
+            Order::where("order_id", $order_id)->update(["order_status" => "Đã giao hàng"]);
+        } else {
+            Order::where("order_id", $order_id)->update(["order_status" => "Đang chờ xác nhận"]);
         }
         $order->refresh(); // Tải lại thông tin từ cơ sở dữ liệu
         return response()->json(['success' => true, 'new_status' => $order->order_status]);
     }
+    public function change_password()
+    {
+        $category_product = CategoryProduct::where('category_status', '1')->orderBy('category_id', 'desc')->get();
+        $brand_product = BrandProduct::where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
+        return view('pages.checkout.change_password')->with('category', $category_product)
+            ->with('brand', $brand_product);
+
+    }
+    public function send_new_password(Request $request)
+    {
+        $customer_id = Session::get('customer_id');
+        $customer = Customer::where('customer_id', $customer_id)->first();
+
+        // Kiểm tra mật khẩu hiện tại
+        if ($customer->customer_password != $request->currentpassword) {
+            return response()->json(['message' => 'Sai mật khẩu hiện tại'], 400);
+        }
+
+        // Kiểm tra độ dài mật khẩu
+        $new_password = $request->newpassword;
+        if (strlen($new_password) < 6) {
+            return response()->json(['message' => 'Mật khẩu mới phải dài hơn 6 ký tự'], 400);
+        }
+
+        // Kiểm tra khớp mật khẩu mới
+        if ($new_password != $request->newpassword2) {
+            return response()->json(['message' => 'Xác minh mật khẩu mới thất bại'], 400);
+        }
+
+        // Cập nhật mật khẩu
+        Customer::where('customer_id', $customer_id)->update(['customer_password' => $new_password]);
+
+        return response()->json(['success' => 'Đổi mật khẩu thành công!'], 200);
+    }
+
+
 }
