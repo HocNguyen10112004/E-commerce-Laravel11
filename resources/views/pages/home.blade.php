@@ -6,7 +6,7 @@
             <h2 class="title text-center">Sản phẩm mới nhất</h2>
             @foreach ($all_product as $item)
                 <a href="{{ URL::to('/chi_tiet_san_pham/' . $item->product_id) }}">
-                    <div class="col-sm-4">
+                    <div class="col-sm-4 item">
                         <div class="product-image-wrapper">
                             <div class="single-products">
                                 <div class="productinfo text-center">
@@ -100,7 +100,7 @@
                 data: $(this).serialize(), // Gửi tất cả dữ liệu trong form
                 success: function(response) {
                     // Hiển thị thông báo thành công bằng SweetAlert
-                    swal("Thành công!", "Thêm thương hiệu thành công!", "success");
+                    swal("Thành công!", "Thêm sản phẩm thành công!", "success");
                 },
                 error: function(xhr) {
                     // Hiển thị thông báo lỗi
@@ -110,3 +110,5 @@
         });
     });
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ asset('backend/js/search.js') }}"></script>

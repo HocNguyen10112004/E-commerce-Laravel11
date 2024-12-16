@@ -107,4 +107,4 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="{{ asset('backend/js/changeStatusProduct.js') }}"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="{{ asset('backend/js/search.js') }}"></script>0
+<script src="{{ asset('backend/js/search.js') }}"></script>
