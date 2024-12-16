@@ -10,13 +10,14 @@
                         <div class="product-image-wrapper">
                             <div class="single-products">
                                 <div class="productinfo text-center">
-                                    <img src="{{ URL::to('uploads/product/' . $item->product_image) }}" height="300px"
-                                        width="100px" alt="" />
+                                    <div style="height: 250px; overflow: hidden; align-items: flex-end;">
+                                        <img src="{{ URL::to('uploads/product/' . $item->product_image) }}" class="img-fluid mx-auto" alt="" />
+                                    </div>
                                     <form class="add-to-cart-form" action="{{ URL::to('/save_cart') }}", method="POST">
                                         @csrf
                                         <span>
                                             <h2>{{ number_format((int) $item->product_price) . ' ' . 'VNĐ' }}</h2>
-                                            <p>{{ $item->product_name }}</p>
+                                            <p style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">{{ $item->product_name }}</p>
                                             <input name="qty" type="hidden" value="1" />
                                             <input name="product_id_hidden" type="hidden"
                                                 value="{{ $item->product_id }}" />
