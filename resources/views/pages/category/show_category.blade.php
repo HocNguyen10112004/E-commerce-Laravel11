@@ -6,7 +6,7 @@
             <h2 class="title text-center">Danh mục sản phẩm {{ $category_name->category_name }}</h2>
             @foreach ($category_by_id as $item)
                 <a href="{{ URL::to('/chi_tiet_san_pham/' . $item->product_id) }}">
-                    <div class="col-sm-4">
+                    <div class="col-sm-4 item">
                         <div class="product-image-wrapper">
                             <div class="single-products">
                                 <div class="productinfo text-center">
