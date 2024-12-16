@@ -80,11 +80,11 @@
         </div>
         <div class="tab-content">
             <div class="tab-pane fade" id="details">
-                <p>{!! $product->product_content !!}</p>
+                <p>{!! $product->product_desc !!}</p>
             </div>
 
             <div class="tab-pane fade" id="companyprofile">
-                <p>{{ $product->product_desc }}</p>
+                <p>{!! nl2br(e($product->product_content)) !!}</p>
             </div>
 
             <div class="tab-pane fade" id="tag">
