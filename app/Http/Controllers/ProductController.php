@@ -31,14 +31,13 @@ class ProductController extends Controller
     public function save_product(Request $request)
     {
         $get_image = $request->file('product_image');
-        if($get_image){
+        if ($get_image) {
             $get_name_image = $get_image->getClientOriginalName();
-            $name_image = current(explode('.',$get_name_image));
-            $new_image = $name_image.rand(0, 99) . '.'.$get_image->getClientOriginalExtension();
-            $get_image->move('uploads/product',$new_image);
-        }
-        else{
-            $new_image='';
+            $name_image = current(explode('.', $get_name_image));
+            $new_image = $name_image . rand(0, 99) . '.' . $get_image->getClientOriginalExtension();
+            $get_image->move('uploads/product', $new_image);
+        } else {
+            $new_image = '';
         }
         $inserted = Product::create([
             'product_name' => $request->input("product_name"),
@@ -60,7 +59,7 @@ class ProductController extends Controller
     public function active_product(Request $request, $product_id)
     {
         $newStatus = $request->input('product_status');
-        
+
         $product = Product::find($product_id);
         $product->product_status = $newStatus;
         $product->save();
@@ -68,9 +67,12 @@ class ProductController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function delete_product($product_id) 
+    public function delete_product($product_id)
     {
-        $deleted = Product::destroy($product_id);
+        $product = Product::find($product_id);
+        // Xóa tất cả reviews của sản phẩm
+        $product->reviews()->delete();
+        $deleted_product = Product::destroy($product_id);
         Session::put("message", "Xóa sản phẩm thành công");
         return redirect("all_product");
     }
@@ -85,23 +87,23 @@ class ProductController extends Controller
 
     public function update_product(Request $request, $product_id)
     {
-        $data=array();
+        $data = array();
         $get_image = $request->file('product_image');
-        if($get_image){
+        if ($get_image) {
             $get_name_image = $get_image->getClientOriginalName();
-            $name_image = current(explode('.',$get_name_image));
-            $new_image = $name_image.rand(0, 99) . '.'.$get_image->getClientOriginalExtension();
-            $get_image->move('uploads/product',$new_image);
+            $name_image = current(explode('.', $get_name_image));
+            $new_image = $name_image . rand(0, 99) . '.' . $get_image->getClientOriginalExtension();
+            $get_image->move('uploads/product', $new_image);
             $data['product_image'] = $new_image;
         }
-        $data['product_name']=$request->input("product_name");
+        $data['product_name'] = $request->input("product_name");
         $data['product_price'] = $request->input("product_price");
         $data['category_id'] = $request->input("product_category");
         $data['brand_id'] = $request->input("product_brand");
         $data['product_content'] = $request->input("product_content");
         $data['product_desc'] = $request->input("product_desc");
-        
-        
+
+
         $product = Product::find($product_id);
         $product->update($data);
 
@@ -112,14 +114,14 @@ class ProductController extends Controller
     {
         $category_product = CategoryProduct::where('category_status', '1')->orderBy('category_id', 'desc')->get();
         $brand_product = BrandProduct::where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
-        $product = Product::with(['brand','category'])->where('product_id', $product_id)->where('product_status', '1')->first();
-        $related_products=Product::with(['brand','category'])->where('brand_id',$product->brand_id)->where('category_id',$product->category_id)->where('product_status', '1')->whereNotIn('product_id', [$product->product_id])->orderBy('product_id', 'desc')->get();
-        $reviews_product=Reviews::with(['customer'])->where('product_id', $product_id)->orderBy('review_id', 'desc')->get();
-        return view("pages.product.show_detail")  ->with('category', $category_product)
-                                                        ->with('brand', $brand_product)
-                                                        ->with('product', $product)
-                                                        ->with('related_products', $related_products)
-                                                        ->with('reviews_product', $reviews_product);
+        $product = Product::with(['brand', 'category'])->where('product_id', $product_id)->where('product_status', '1')->first();
+        $related_products = Product::with(['brand', 'category'])->where('brand_id', $product->brand_id)->where('category_id', $product->category_id)->where('product_status', '1')->whereNotIn('product_id', [$product->product_id])->orderBy('product_id', 'desc')->get();
+        $reviews_product = Reviews::with(['customer'])->where('product_id', $product_id)->orderBy('review_id', 'desc')->get();
+        return view("pages.product.show_detail")->with('category', $category_product)
+            ->with('brand', $brand_product)
+            ->with('product', $product)
+            ->with('related_products', $related_products)
+            ->with('reviews_product', $reviews_product);
     }
     public function import(Request $request)
     {
@@ -145,7 +147,7 @@ class ProductController extends Controller
             // Giả sử hình ảnh được lưu trữ dưới dạng tên file
             $imagePath = $row['C']; // Đường dẫn hình ảnh trong Excel
             $fileName = basename($imagePath);
-            copy($imagePath, 'uploads/product/'. $fileName);
+            copy($imagePath, 'uploads/product/' . $fileName);
             // Lưu thông tin sản phẩm vào cơ sở dữ liệu
             Product::create([
                 'product_name' => $row['A'],
@@ -164,15 +166,14 @@ class ProductController extends Controller
     public function add_review(Request $request, $product_id)
     {
         $customer_id = Session::get('customer_id');
-        if(!$customer_id)
-        {
+        if (!$customer_id) {
             return Redirect::to('/login_checkout');
         }
         Reviews::create([
             'customer_id' => $customer_id,
             'review_content' => $request->input('review_content'),
             'product_id' => $product_id,
-            ]);
+        ]);
         return Redirect::back();
     }
 }
