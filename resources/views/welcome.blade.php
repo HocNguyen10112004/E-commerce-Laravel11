@@ -154,7 +154,7 @@
                     </div>
                     <div class="col-sm-3">
                         <div class="search_box pull-right">
-                            <input type="text" placeholder="Search" />
+                            <input id="search" type="text" placeholder="Search" />
                         </div>
                     </div>
                 </div>
@@ -458,6 +458,8 @@
     <div id="fb-root"></div>
     <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v21.0">
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ asset('backend/js/search.js') }}"></script>
 
 </body>
 

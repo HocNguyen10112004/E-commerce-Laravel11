@@ -71,7 +71,7 @@ class ProductController extends Controller
     {
         $product = Product::find($product_id);
         // Xóa tất cả reviews của sản phẩm
-        $product->reviews()->delete();
+        $product->review()->delete();
         $deleted_product = Product::destroy($product_id);
         Session::put("message", "Xóa sản phẩm thành công");
         return redirect("all_product");
