@@ -47,14 +47,14 @@
             <h2 class="title text-center">Sản phẩm mới nhất</h2>
             @foreach ($all_product as $item)
                 <a href="{{ URL::to('/chi_tiet_san_pham/' . $item->product_id) }}">
-                    <div class="col-sm-4 item">
+                    <div class="col-sm-4 itemfinder">
                         <div class="product-image-wrapper">
                             <div class="single-products">
                                 <div class="productinfo text-center">
                                     <div style="height: 250px; overflow: hidden; align-items: flex-end;">
                                         <img src="{{ URL::to('uploads/product/' . $item->product_image) }}" class="img-fluid mx-auto" alt="" />
                                     </div>
-                                    <form class="add-to-cart-form" action="{{ URL::to('/save_cart') }}", method="POST">
+                                    <form class="add-to-cart-form" , method="POST">
                                         @csrf
                                         <span>
                                             <h2>{{ number_format((int) $item->product_price) . ' ' . 'VNĐ' }}</h2>
@@ -62,15 +62,12 @@
                                             <input name="qty" type="hidden" value="1" />
                                             <input name="product_id_hidden" type="hidden"
                                                 value="{{ $item->product_id }}" />
-
                                             <button type="submit" class="btn btn-fefault cart">
                                                 <i class="fa fa-shopping-cart"></i>
                                                 Add to cart
                                             </button>
-
                                         </span>
                                     </form>
-
 
                                 </div>
                             </div>

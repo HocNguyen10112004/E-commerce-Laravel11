@@ -121,7 +121,7 @@
             </div>
         </div><!--/header-middle-->
 
-        <div class="header-bottom"><!--header-bottom-->
+        <div class="header-bottom" ><!--header-bottom-->
             <div class="container">
                 <div class="row">
                     <div class="col-sm-9">
@@ -153,8 +153,8 @@
                         </div>
                     </div>
                     <div class="col-sm-3">
-                        <div class="search_box pull-right">
-                            <input id="search" type="text" placeholder="Search" />
+                        <div class="search_box pull-right" style="position: relative;">
+                            <input id="search" type="text" placeholder="Search" style="position: sticky; top: 10px;"/>
                         </div>
                     </div>
                 </div>
@@ -198,17 +198,6 @@
                             </div>
 
                         </div><!--/brands_products-->
-
-                        <div class="price-range"><!--price-range-->
-                            <h2>Price Range</h2>
-                            <div class="well text-center">
-                                <input type="text" class="span2" value="" data-slider-min="0"
-                                    data-slider-max="600" data-slider-step="5" data-slider-value="[250,450]"
-                                    id="sl2"><br />
-                                <b class="pull-left">$ 0</b> <b class="pull-right">$ 600</b>
-                            </div>
-                        </div><!--/price-range-->
-
 
 
                     </div>
@@ -392,6 +381,7 @@
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('backend/js/search.js') }}"></script>
+    <script src="{{ asset('backend/js/searchitem.js') }}"></script>
 
 </body>
 
