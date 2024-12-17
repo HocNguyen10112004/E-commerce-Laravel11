@@ -1,9 +1,3 @@
-<!--A Design by W3layouts
-Author: W3layout
-Author URL: http://w3layouts.com
-License: Creative Commons Attribution 3.0 Unported
-License URL: http://creativecommons.org/licenses/by/3.0/
--->
 <!DOCTYPE html>
 
 <head>
@@ -50,7 +44,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         <header class="header fixed-top clearfix">
             <!--logo start-->
             <div class="brand">
-                <a href="index.html" class="logo">
+                <a href="" class="logo">
                     ADMIN
                 </a>
                 <div class="sidebar-toggle-box">
@@ -63,7 +57,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 <!--search & user info start-->
                 <ul class="nav pull-right top-menu">
                     <li>
-                        <input type="text" class="form-control search" placeholder=" Search">
+                        <!-- <input type="text" class="form-control search" placeholder=" Search"> -->
                     </li>
                     <!-- user login dropdown start-->
                     <li class="dropdown">
@@ -99,7 +93,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 <div class="leftside-navigation">
                     <ul class="sidebar-menu" id="nav-accordion">
                         <li>
-                            <a class="active" href="index.html">
+                            <a class="active" href="">
                                 <i class="fa fa-dashboard"></i>
                                 <span>Tổng Quan</span>
                             </a>
@@ -168,7 +162,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             <!-- footer -->
             <div class="footer">
                 <div class="wthree-copyright">
-                    <p>© 2017 Visitors. All rights reserved | Design by <a href="http://w3layouts.com">W3layouts</a></p>
+                    <p>© 2017 Visitors. All rights reserved</p>
                 </div>
             </div>
             <!-- / footer -->
