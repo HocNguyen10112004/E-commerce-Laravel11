@@ -115,7 +115,7 @@ class ProductController extends Controller
         $category_product = CategoryProduct::where('category_status', '1')->orderBy('category_id', 'desc')->get();
         $brand_product = BrandProduct::where('brand_status', '1')->orderBy('brand_id', 'desc')->get();
         $product = Product::with(['brand', 'category'])->where('product_id', $product_id)->where('product_status', '1')->first();
-        $related_products = Product::with(['brand', 'category'])->where('brand_id', $product->brand_id)->where('category_id', $product->category_id)->where('product_status', '1')->whereNotIn('product_id', [$product->product_id])->orderBy('product_id', 'desc')->get();
+        $related_products = Product::with(['brand', 'category'])->where('brand_id', $product->brand_id)->where('category_id', $product->category_id)->where('product_status', '1')->whereNotIn('product_id', [$product->product_id])->orderBy('product_id', 'desc')->limit(3)->get();
         $reviews_product = Reviews::with(['customer'])->where('product_id', $product_id)->orderBy('review_id', 'desc')->get();
         return view("pages.product.show_detail")->with('category', $category_product)
             ->with('brand', $brand_product)
