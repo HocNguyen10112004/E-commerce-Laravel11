@@ -93,8 +93,10 @@
                     <div class="col-sm-8">
                         <div class="shop-menu pull-right">
                             <ul class="nav navbar-nav">
-                                <li><a href="{{ URL::to('/change_password') }}"><i class="fa fa-user"></i>Đổi mật khẩu</a>
-                                </li>
+                                @if (Session::get('customer_id') != null)
+                                    <li><a href="{{ URL::to('/change_password') }}"><i class="fa fa-user"></i>Đổi mật khẩu</a>
+                                    </li>
+                                @endif
                                 <li><a href="#"><i class="fa fa-star"></i>Yêu thích</a></li>
                                 <li><a href="{{ URL::to('/payment') }}"><i class="fa fa-crosshairs"></i>Thanh
                                         toán</a>
