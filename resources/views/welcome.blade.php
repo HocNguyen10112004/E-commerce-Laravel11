@@ -49,11 +49,11 @@
 </head><!--/head-->
 
 <body>
-    @php
+    {{-- @php
         echo Session::get('customer_id');
         echo Session::get('shipping_id');
 
-    @endphp
+    @endphp --}}
     <header id="header"><!--header-->
         <div class="header_top"><!--header_top-->
             <div class="container">
@@ -137,7 +137,7 @@
                         <div class="mainmenu pull-left">
                             <ul class="nav navbar-nav collapse navbar-collapse">
                                 <li><a href="{{ URL::to('/') }}" class="active">Home</a></li>
-                                <li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
+                                {{-- <li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu">
                                         <li><a href="shop.html">Products</a></li>
                                     </ul>
@@ -148,7 +148,7 @@
                                     </ul>
                                 </li>
                                 <li><a href="{{ URL::to('/show_cart') }}">Giỏ Hàng</a></li>
-                                <li><a href="contact-us.html">Liên hệ</a></li>
+                                <li><a href="contact-us.html">Liên hệ</a></li> --}}
                             </ul>
                         </div>
                     </div>
