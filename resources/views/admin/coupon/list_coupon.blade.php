@@ -42,6 +42,7 @@
                             </th>
                             <th>Tên mã giảm giá</th>
                             <th>Mã giảm giá</th>
+                            <th>Giảm</th>
                             <th>Số lượng</th>
                         </tr>
                     </thead>
@@ -52,12 +53,17 @@
                                 </td>
                                 <td>{{ $item->coupon_name }}</td>
                                 <th>{{ $item->coupon_code }}</th>
+                                @if(  $item->coupon_desc == 1)
+                                <th>{{ $item->coupon_value }}%</th>
+                                @else
+                                <th>{{ $item->coupon_value }}VNĐ</th>
+                                @endif
                                 <th>{{ $item->coupon_number }}</th>
                                 <td>
-                                    <a href="{{ URL::to('/edit_coupon/' . $item->coupon_id) }}" class="active styling-edit"
+                                    {{-- <a href="{{ URL::to('/edit_coupon/' . $item->coupon_id) }}" class="active styling-edit"
                                         ui-toggle-class="">
                                         <i class="fa fa-pencil-square-o text-success text-active"></i>
-                                    </a>
+                                    </a> --}}
                                     <a onclick="return confirm('Are you sure to delete?')"
                                         href="{{ URL::to('/delete_coupon/' . $item->coupon_id) }}"
                                         class="active styling-edit" ui-toggle-class="">

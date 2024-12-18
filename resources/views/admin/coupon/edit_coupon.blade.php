@@ -1,15 +1,15 @@
 @extends('admin_layout')
 @section('admin_content')
-    <div class="col-lg-12">
-        <section class="panel">
-            <header class="panel-heading">
-                Thêm mã giảm giá
-            </header>
-            <div class="panel-body">
+<div class="col-lg-12">
+    <section class="panel">
+        <header class="panel-heading">
+            Chỉnh sửa mã giảm giá
+        </header>
+        <div class="panel-body">
 
-                <div class="position-center">
-
-                    <form role="form" id="coupon-form">
+            <div class="position-center">
+                
+                <form role="form" action="{{ URL::to('/update_coupon/'.$edit_coupon->coupon_id) }}" method="POST">
                         @csrf
                         <div class="form-group">
                             <label for="coupon_name">Tên mã giảm giá</label>
@@ -35,45 +35,12 @@
                             <input type="text" class="form-control" id="coupon_value" name="coupon_value">
                         </div>
                         <button type="submit" name="add_coupon" class="btn btn-info">Thêm mã giảm giá</button>
-                    </form>
-                </div>
-
+                    
+                </form>
             </div>
-        </section>
-    </div>
+
+        </div>
+    </section>
+</div>
 @endsection
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    $(document).ready(function() {
-        // Lắng nghe sự kiện submit của form
-        $('#coupon-form').on('submit', function(e) {
-            e.preventDefault(); // Ngăn chặn submit form thông thường
-
-            // Lấy dữ liệu từ form
-            var formData = {
-                coupon_name: $('#coupon_name').val(),
-                coupon_code: $('#coupon_code').val(),
-                coupon_number: $('#coupon_number').val(),
-                coupon_desc: $('select[name="coupon_desc"]').val(),
-                coupon_value: $('#coupon_value').val(),
-
-                _token: $('input[name="_token"]').val() // CSRF token
-            };
-
-            // Gửi AJAX request
-            $.ajax({
-                url: '/insert_coupon_code',
-                type: "POST",
-                data: formData,
-                success: function(response) {
-                    alert("Thêm mã giảm giá thành công!");
-                    $('#coupon-form')[0].reset(); // Reset lại form sau khi thêm thành công
-                },
-                error: function(xhr) {
-                    alert("Có lỗi xảy ra. Vui lòng thử lại.");
-                    console.log(xhr.responseText); // Kiểm tra lỗi phía server
-                }
-            });
-        });
-    });
-</script>
