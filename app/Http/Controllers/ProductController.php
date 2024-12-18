@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OrderDetails;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -70,6 +71,10 @@ class ProductController extends Controller
     public function delete_product($product_id)
     {
         $product = Product::find($product_id);
+        if ($product->orderDetails()) {
+            Session::put("message", "Xóa sản phẩm thất bại");
+            return redirect("all_product");
+        }
         // Xóa tất cả reviews của sản phẩm
         $product->review()->delete();
         $deleted_product = Product::destroy($product_id);
