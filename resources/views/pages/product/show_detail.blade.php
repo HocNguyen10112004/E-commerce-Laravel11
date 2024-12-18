@@ -80,12 +80,14 @@
         </div>
         <div class="tab-content">
             <div class="tab-pane fade" id="details">
-                <p>{!! $product->product_desc !!}</p>
+                <p>{!! nl2br(e($product->product_content)) !!}</p>
             </div>
 
             <div class="tab-pane fade" id="companyprofile">
-                <p>{!! nl2br(e($product->product_content)) !!}</p>
+                <p>{!! nl2br(e($product->product_desc)) !!}</p>
             </div>
+
+            
 
             <div class="tab-pane fade" id="tag">
                 <div class="col-sm-3">
