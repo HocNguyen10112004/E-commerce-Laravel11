@@ -50,7 +50,12 @@
                             <td>{{ $order->shipping->shipping_email }}</td>
                             <td>{{ $order->shipping->shipping_phone }}</td>
                             <td>{{ $order->shipping->shipping_address }}</td>
-                            <td>{{ $order->payment->payment_method }}</td>
+                            @if ($order->payment->payment_method == '2')
+                                <td>Thanh toán khi nhận hàng</td>
+                            @else
+                                <td>Thanh toán qua ví Momo</td>
+                            @endif
+                            <!-- <td>{{ $order->payment->payment_method }}</td> -->
                             <td>{{ $order->shipping->shipping_notes }}</td>
                         </tr>
                     </tbody>

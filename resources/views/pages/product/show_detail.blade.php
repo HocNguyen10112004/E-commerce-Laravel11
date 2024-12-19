@@ -179,6 +179,7 @@
             <div class="carousel-inner">
                 {{-- class="item active" --}}
                 @foreach ($related_products as $item)
+                    <a href="{{ URL::to('/chi_tiet_san_pham/' . $item->product_id) }}">
                     <div class="col-sm-4">
                         <div class="product-image-wrapper">
                             <div class="single-products">
@@ -187,12 +188,13 @@
                                         width="100px" alt="" />
                                     <h2>{{ number_format((int) $item->product_price) . ' ' . 'VNĐ' }}</h2>
                                     <p>{{ $item->product_name }}</p>
-                                    <button type="button" class="btn btn-default add-to-cart"><i
-                                            class="fa fa-shopping-cart"></i>Add to cart</button>
+                                    <!-- <button type="button" class="btn btn-default add-to-cart"><i
+                                            class="fa fa-shopping-cart"></i>Add to cart</button> -->
                                 </div>
                             </div>
                         </div>
                     </div>
+                    </a>
                 @endforeach
 
             </div>

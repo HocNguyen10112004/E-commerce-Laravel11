@@ -53,7 +53,7 @@
                                 </td>
                                 <td>{{ $item->customer->customer_name }}</td>
                                 <td>{{ $item->order_total }}</td>
-                                <td id="order_status">
+                                <td id="{{ $item->order_id }}">
                                     <span class="order-text">{{ $item->order_status }}</span>
                                     <a href="#" class="verify-order" data-order-id="{{ $item->order_id }}">
                                         <i class="fa fa-check-circle" style="color: green;"></i>
@@ -105,7 +105,8 @@
                 if (response.success) {
 
                     // Cập nhật giao diện nếu cần
-                    $('#order_status .order-text').text(response.new_status);
+                    // $('#orderId .order-text').text(response.new_status);
+                    $('#' + orderId + ' .order-text').text(response.new_status);
                 } else {
                     alert(response.message);
                 }
